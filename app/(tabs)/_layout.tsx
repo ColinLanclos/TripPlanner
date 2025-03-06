@@ -53,6 +53,11 @@ export default function TabLayout() {
           title: 'Profile',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
         }}/>
+
+        <Tabs.Screen name='trippage'
+        options={{
+          tabBarItemStyle: {display: 'none'}
+        }} />
     </Tabs>
   );
 }

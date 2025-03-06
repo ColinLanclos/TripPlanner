@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import React, {useState} from 'react';
 import {
   FlatList,
@@ -8,6 +9,7 @@ import {
   View,
 } from 'react-native';
 import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type ItemData = {
   id: string;
@@ -72,7 +74,7 @@ const ListTripComp = () => {
     return (
       <Item
         item={item}
-        onPress={() => setSelectedId(item.id)}
+        onPress={async () => {setSelectedId(item.id); await removeValue(); await storeData(item.id);  router.push("/(tabs)/trippage")}}
         backgroundColor={backgroundColor}
         textColor={color}
       />
@@ -105,5 +107,25 @@ const styles = StyleSheet.create({
     fontSize: 32,
   },
 });
+
+const storeData = async (value: string) => {
+    try {
+        console.log("stored item here")
+      await AsyncStorage.setItem('tripId', value);
+    } catch (e) {
+      console.log(e)
+    }
+  };
+
+  const removeValue = async () => {
+    try {
+      await AsyncStorage.removeItem('@MyApp_key')
+      console.log("Deleted Old Id")
+    } catch(e) {
+      // remove error
+    }
+  
+    console.log('Done.')
+  }
 
 export default ListTripComp;

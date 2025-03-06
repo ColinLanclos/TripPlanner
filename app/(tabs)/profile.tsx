@@ -9,6 +9,7 @@ const profile = () => {
       <ScrollView className="container bg-white w-full h-full text-left">
         <View className="mt-5">
           <Text>Ntn</Text>
+          <Text>Steal it From Old Project</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
