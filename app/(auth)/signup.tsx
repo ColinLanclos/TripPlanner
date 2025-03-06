@@ -13,14 +13,14 @@ const style = StyleSheet.create({
 
 const singup = () => {
   return (
-    <SafeAreaView>
+
       <ScrollView className="container bg-white w-full h-full text-left">
         <View className="items-center">
            <Text>Build singup component</Text>
            <SignUpForm/>
         </View>
       </ScrollView>
-      </SafeAreaView>
+
   );
 };
 

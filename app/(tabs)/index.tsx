@@ -6,11 +6,13 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ListTripComp from '@/components/ListTripComp';
+import { Link } from 'expo-router';
 
 export default function HomeScreen() {
   return (
     <SafeAreaView style={{flex:1}} >
       <Text>Wow</Text>
+      <Link href={"/(auth)/login"}> To Auth</Link>
   
           <ListTripComp />
       
