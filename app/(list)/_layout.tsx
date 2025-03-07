@@ -1,7 +1,7 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Stack, Tabs } from "expo-router";
+import { Tabs } from "expo-router";
 
 
 const _layout = () => {
@@ -9,8 +9,9 @@ const _layout = () => {
         //list for Groceris, Big Items, and Indvidual
             <Tabs>
                 <Tabs.Screen name="grocerylist" options={{headerShown: true}} />
-                <Tabs.Screen name="individual" options={{headerShown: true}} />
-                <Tabs.Screen name="trip" options={{headerShown: true}}/>
+                <Tabs.Screen name="ItemsList" options={{headerShown: true}} />
+                <Tabs.Screen name="PersonItems" options={{headerShown: true}}/>
+                <Tabs.Screen name="TripPeopleList" options={{headerShown: true}}/>
             </Tabs>
     )
 }

@@ -1,4 +1,4 @@
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TripPlanComp from '@/components/TripPlanComp';
@@ -7,6 +7,38 @@ import AttendingStatues from '@/components/AttendingStatues';
 import { router } from 'expo-router';
 import TripPeopleList from '../(list)/TripPeopleList';
 
+const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingTop: 5,
+      paddingHorizontal: 20,
+      flexDirection: 'row',
+      flexWrap: 'wrap', // Allow items to wrap
+      justifyContent: 'space-between', // Evenly space out buttons
+    },
+    button: {
+      backgroundColor: '#6e3b6e', // Purple background
+      paddingVertical: 12,         // Padding on top and bottom
+      paddingHorizontal: 20,       // Padding on the sides
+      marginBottom: 15,            // Spacing between buttons
+      borderRadius: 8,             // Rounded corners
+      alignItems: 'center',        // Center the text horizontally
+      justifyContent: 'center',    // Center the text vertically
+      width: '48%',                // Each button takes up roughly half the width
+      elevation: 3,                // Add shadow for Android
+      shadowColor: '#000',         // iOS shadow color
+      shadowOffset: { width: 0, height: 2 }, // Shadow offset
+      shadowOpacity: 0.2,          // Shadow opacity
+      shadowRadius: 4,             // Shadow blur radius
+    },
+    buttonText: {
+      color: '#fff',               // White text color
+      fontSize: 18,                 // Font size
+      fontWeight: 'bold',           // Bold text
+    },
+  });
+  
+
 export default function TripPage() {
   return (
       <SafeAreaView edges={["top",'bottom']}>
@@ -14,19 +46,42 @@ export default function TripPage() {
           <View className="mt-5">
             <Text>Ntn</Text>
             <TripPlanComp /> 
-                <TouchableOpacity onPress={() => {router.push("/(list)/grocerylist"), console.log("Pressed?")}}>
-                    <Text>Grocery List</Text>
+            <View style={styles.container}>
+                <TouchableOpacity
+                    onPress={() => { router.push("/(list)/grocerylist"); console.log("Pressed?"); }}
+                    style={styles.button}
+                >
+                    <Text style={styles.buttonText}>Grocery List</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => {router.push("/(list)/ItemsList"), console.log("Pressed?")}}>
-                    <Text>Trip List</Text>
+
+                <TouchableOpacity
+                    onPress={() => { router.push("/(list)/ItemsList"); console.log("Pressed?"); }}
+                    style={styles.button}
+                >
+                    <Text style={styles.buttonText}>Trip List</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => {router.push("/(list)/TripPeopleList"), console.log("Pressed?")}}>
-                    <Text>Your List</Text>
+
+                <TouchableOpacity
+                    onPress={() => { router.push("/(list)/PersonItems"); console.log("Pressed?"); }}
+                    style={styles.button}
+                >
+                    <Text style={styles.buttonText}>Your List</Text>
                 </TouchableOpacity>
-            <TripIinforamationComp />
+
+                <TouchableOpacity
+                    onPress={() => { router.push("/(list)/TripPeopleList"); console.log("Pressed?"); }}
+                    style={styles.button}
+                >
+                    <Text style={styles.buttonText}>Guest List</Text>
+                </TouchableOpacity>
+            </View>
             <AttendingStatues />
+            <TripIinforamationComp />
           </View>
         </ScrollView>
       </SafeAreaView>
     );
+    
+
 }
+
