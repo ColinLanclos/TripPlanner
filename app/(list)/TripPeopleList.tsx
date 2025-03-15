@@ -1,3 +1,4 @@
+import AddPersonButton from "@/components/AddPersonButton";
 import React, { useState } from "react";
 import { View, Text, FlatList, Switch, StyleSheet, Image } from "react-native";
 
@@ -34,6 +35,7 @@ const TripPeopleList = () => {
 
   return (
     <View style={styles.container}>
+      <AddPersonButton />
       <FlatList
         data={people}
         keyExtractor={(item) => item.id}

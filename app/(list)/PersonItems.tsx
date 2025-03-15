@@ -1,3 +1,4 @@
+import AddPersonalItemButton from "@/components/AddPersonalItem";
 import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View, FlatList } from "react-native";
 
@@ -41,6 +42,7 @@ const ItemChecklist = () => {
 
   return (
     <View style={styles.container}>
+      <AddPersonalItemButton />
       <Text style={styles.header}>Item Checklist</Text>
       <FlatList
         data={items}

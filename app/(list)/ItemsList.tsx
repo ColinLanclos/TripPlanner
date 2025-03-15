@@ -1,3 +1,4 @@
+import AddGroupItemButton from "@/components/AddGroupItem";
 import React, { useState } from "react";
 import { View, Text, SafeAreaView, Switch, TouchableOpacity, StyleSheet, FlatList } from "react-native";
 
@@ -23,6 +24,7 @@ const ItemListScreen = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
+        <AddGroupItemButton />
         <Text style={styles.title}>Items for the Trip</Text>
 
         {/* List of Items */}

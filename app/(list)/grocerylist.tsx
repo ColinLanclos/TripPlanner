@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import AddGroceryButton from "@/components/AddGrocery";
+
 
 const groceryList = [
   { id: "1", name: "Apples", quantity: 5, checked: false },
@@ -26,10 +28,27 @@ const GroceryList = () => {
     );
   };
 
+  const increaseQuantity = (id: string) => {
+    setGroceries((prevGroceries) =>
+      prevGroceries.map((item) =>
+        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+      )
+    );
+  };
 
+  const decreaseQuantity = (id: string) => {
+    setGroceries((prevGroceries) =>
+      prevGroceries.map((item) =>
+        item.id === id && item.quantity > 0
+          ? { ...item, quantity: item.quantity - 1 }
+          : item
+      )
+    );
+  };
 
   return (
     <View style={styles.container}>
+      <AddGroceryButton />
       <FlatList
         scrollEnabled={false}
         nestedScrollEnabled={true}
@@ -39,10 +58,24 @@ const GroceryList = () => {
           <View style={styles.item}>
             <View style={styles.textContainer}>
               <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.quantity}>Qty: {item.quantity}</Text>
+              <View style={styles.quantityContainer}>
+                <Text style={styles.quantity}>Qty: {item.quantity}</Text>
+                <View style={styles.quantityButtons}>
+                  <TouchableOpacity onPress={() => increaseQuantity(item.id)} style={styles.quantityButton}>
+                    <Ionicons name="add-circle-outline" size={24} color="#007bff" />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => decreaseQuantity(item.id)} style={styles.quantityButton}>
+                    <Ionicons name="remove-circle-outline" size={24} color="#007bff" />
+                  </TouchableOpacity>
+                </View>
+              </View>
             </View>
-            <TouchableOpacity onPress={() => toggleChecked(item.id)} style={{padding:4}}>
-              <Ionicons name={item.checked ? "checkbox" : "square-outline"} size={28} color="#007bff" />
+            <TouchableOpacity onPress={() => toggleChecked(item.id)} style={{ padding: 4 }}>
+              <Ionicons
+                name={item.checked ? "checkbox" : "square-outline"}
+                size={28}
+                color="#007bff"
+              />
             </TouchableOpacity>
           </View>
         )}
@@ -77,9 +110,22 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
   },
+  quantityContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
   quantity: {
     fontSize: 16,
     color: "#555",
+    marginRight: 10,
+  },
+  quantityButtons: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  quantityButton: {
+    marginHorizontal: 8,
+    padding: 4,
   },
 });
 
