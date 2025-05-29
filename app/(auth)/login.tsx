@@ -20,6 +20,7 @@ const login = () => {
            <Text>Build in login component</Text>
            <LoginForm />
         </View>
+        
       </ScrollView>
       </SafeAreaView>
   );

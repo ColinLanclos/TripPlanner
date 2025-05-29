@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
+import { push } from 'expo-router/build/global-state/routing';
 
 const ProfilePage = () => {
   const handleLogout = () => {
@@ -18,8 +19,7 @@ const ProfilePage = () => {
   };
 
   const handleMakeDefaultList = () => {
-    console.log('Make Default List button pressed!');
-    // Add logic for making a default list
+    router.push('../(list)/DefualtListEditorAndMaker');
   };
 
   return (

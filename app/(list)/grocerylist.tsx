@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import AddGroceryButton from "@/components/AddGrocery";
+import AddGroceryItemModal from "@/components/AddGroceryItemModal";
 
 
 const groceryList = [
@@ -48,10 +48,9 @@ const GroceryList = () => {
 
   return (
     <View style={styles.container}>
-      <AddGroceryButton />
+      <AddGroceryItemModal />
       <FlatList
-        scrollEnabled={false}
-        nestedScrollEnabled={true}
+        scrollEnabled={true} 
         data={groceries}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (

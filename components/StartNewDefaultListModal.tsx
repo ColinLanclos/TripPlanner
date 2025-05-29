@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { TouchableOpacity, Text, StyleSheet,Modal, View, TextInput } from 'react-native';
 import { red } from 'react-native-reanimated/lib/typescript/Colors';
 
-const AddGroupItemButton = () => {
+const StartNewDefaultListModal = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [itemName, setItemName] = useState("");
-  const [amount, setAmount] = useState("");
   const [display, setDisplay] = useState(false);
 
   const handlePress = () => {
@@ -15,13 +14,12 @@ const AddGroupItemButton = () => {
   };
 
   function addNewitem() {
-    if(!itemName && !amount){
+    if(!itemName){
       setDisplay(true);
     }else{
       setDisplay(false);
       setModalVisible(!modalVisible);
       console.log("Added New Item");
-      setAmount("");
       setItemName("");
     }
   }
@@ -39,25 +37,17 @@ const AddGroupItemButton = () => {
             <View style={styles.modalView}>
               <Text style={styles.modalText}>Add New Item</Text>
 
-              <Text>Item Name</Text>
+              <Text>List Name</Text>
               <TextInput
                 style={styles.input}
                 onChangeText={setItemName}
                 value={itemName}
               />
 
-              <Text>Amount</Text>
-              <TextInput
-                keyboardType='numeric'
-                style={styles.input}
-                onChangeText={setAmount}
-                value={amount}
-              />  
-
               <TouchableOpacity
                 style={[styles.button, styles.buttonClose]}
                 onPress={() =>  addNewitem()}>
-                <Text style={styles.textStyle}>Add New Item</Text>
+                <Text style={styles.textStyle}>Start List</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.button, styles.buttonClose]}
@@ -65,13 +55,13 @@ const AddGroupItemButton = () => {
                   setDisplay(false);}}>
                 <Text style={styles.textStyle}>Cancel</Text>
               </TouchableOpacity>
-              {display && <Text style={styles.redText}>Fill In Both Boxes Before Submittings</Text>}
+              {display && <Text style={styles.redText}>Fill In Box Before Submittings</Text>}
             </View>
           </View>
         </Modal>
 
       <TouchableOpacity onPress={handlePress} style={styles.button}>
-        <Text style={styles.buttonText}>Add Group Item</Text>
+        <Text style={styles.buttonText}>Start New List</Text>
       </TouchableOpacity>
     </View>
   );
@@ -136,4 +126,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddGroupItemButton;
+export default StartNewDefaultListModal;

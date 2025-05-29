@@ -1,4 +1,5 @@
 import AddGroupItemButton from "@/components/AddGroupItem";
+import WhoBringItemModal from "@/components/WhoBringItemModal";
 import React, { useState } from "react";
 import { View, Text, SafeAreaView, Switch, TouchableOpacity, StyleSheet, FlatList } from "react-native";
 
@@ -25,6 +26,7 @@ const ItemListScreen = () => {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <AddGroupItemButton />
+        
         <Text style={styles.title}>Items for the Trip</Text>
 
         {/* List of Items */}
@@ -33,13 +35,16 @@ const ItemListScreen = () => {
           renderItem={({ item }) => (
             <View style={styles.itemContainer}>
               <Text style={styles.itemName}>{item.name}</Text>
-              <Text style={styles.itemPerson}>Bringing: {item.person || "No one"}</Text>
+              <View style={styles.itemPerson}>
+                <WhoBringItemModal itemName={item.name} />
+              </View>
               <View style={styles.switchContainer}>
-                <Switch
-                  value={item.bringing}
-                  onValueChange={() => handleSwitchToggle(item.id)}
-                  disabled
-                />
+              <TouchableOpacity onPress={() => console.log("Minus pressed", item.id)} style={styles.addsub}>
+                  <Text style={styles.buttonText} >−</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => console.log("Plus pressed", item.id)} style={styles.addsub}>
+                  <Text style={styles.buttonText}>+</Text>
+                </TouchableOpacity>
               </View>
             </View>
           )}
@@ -51,12 +56,24 @@ const ItemListScreen = () => {
         <TouchableOpacity onPress={() => console.log('Going to the next screen')}>
           <Text style={styles.button}>Go to Next Screen</Text>
         </TouchableOpacity>
+        
       </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  buttonText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  addsub: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10, // Or use marginHorizontal if gap doesn't work in your RN version
+  },
   safeArea: {
     flex: 1, // Ensure SafeAreaView takes the full height of the screen
   },
@@ -85,11 +102,14 @@ const styles = StyleSheet.create({
     flex: 2,  // Makes the item name take up more space
   },
   itemPerson: {
+    
     fontSize: 16,
     color: 'gray',
     flex: 3,  // Ensures enough space for the person
   },
   switchContainer: {
+    marginLeft: 2,
+    gap: 20,
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,  // Makes sure switch aligns properly

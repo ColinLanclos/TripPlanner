@@ -37,7 +37,7 @@ const AddGroupItemButton = () => {
           }}>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <Text style={styles.modalText}>Add New Item</Text>
+              <Text style={styles.modalText}>Add New Grocery</Text>
 
               <Text>Item Name</Text>
               <TextInput
@@ -71,7 +71,7 @@ const AddGroupItemButton = () => {
         </Modal>
 
       <TouchableOpacity onPress={handlePress} style={styles.button}>
-        <Text style={styles.buttonText}>Add Group Item</Text>
+        <Text style={styles.buttonText}>Add Grocery Item</Text>
       </TouchableOpacity>
     </View>
   );

@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { TouchableOpacity, Text, StyleSheet,Modal, View, TextInput } from 'react-native';
 import { red } from 'react-native-reanimated/lib/typescript/Colors';
 
-const AddGroupItemButton = () => {
+const AddDefaultModal = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [itemName, setItemName] = useState("");
-  const [amount, setAmount] = useState("");
   const [display, setDisplay] = useState(false);
 
   const handlePress = () => {
@@ -15,13 +14,12 @@ const AddGroupItemButton = () => {
   };
 
   function addNewitem() {
-    if(!itemName && !amount){
+    if(!itemName){
       setDisplay(true);
     }else{
       setDisplay(false);
       setModalVisible(!modalVisible);
       console.log("Added New Item");
-      setAmount("");
       setItemName("");
     }
   }
@@ -46,14 +44,6 @@ const AddGroupItemButton = () => {
                 value={itemName}
               />
 
-              <Text>Amount</Text>
-              <TextInput
-                keyboardType='numeric'
-                style={styles.input}
-                onChangeText={setAmount}
-                value={amount}
-              />  
-
               <TouchableOpacity
                 style={[styles.button, styles.buttonClose]}
                 onPress={() =>  addNewitem()}>
@@ -65,13 +55,13 @@ const AddGroupItemButton = () => {
                   setDisplay(false);}}>
                 <Text style={styles.textStyle}>Cancel</Text>
               </TouchableOpacity>
-              {display && <Text style={styles.redText}>Fill In Both Boxes Before Submittings</Text>}
+              {display && <Text style={styles.redText}>Fill In Box Before Submittings</Text>}
             </View>
           </View>
         </Modal>
 
       <TouchableOpacity onPress={handlePress} style={styles.button}>
-        <Text style={styles.buttonText}>Add Group Item</Text>
+        <Text style={styles.buttonText}>Add Personal Item</Text>
       </TouchableOpacity>
     </View>
   );
@@ -136,4 +126,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddGroupItemButton;
+export default AddDefaultModal;

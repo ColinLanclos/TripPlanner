@@ -45,6 +45,12 @@ const LoginForm = () => {
           >
             <Text style={styles.loginButtonText}>Login</Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => router.push("/(auth)/signup")}
+            style={styles.loginButton}
+          >
+            <Text style={styles.loginButtonText}>Sign Up</Text>
+          </TouchableOpacity>
 
           {/* Reset Password Link */}
           <TouchableOpacity onPress={() => router.push("/(auth)/resetpassword")}>
