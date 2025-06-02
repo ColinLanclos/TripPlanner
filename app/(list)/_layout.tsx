@@ -13,6 +13,7 @@ const _layout = () => {
                 <Tabs.Screen name="PersonItems" options={{headerShown: true}}/>
                 <Tabs.Screen name="TripPeopleList" options={{headerShown: true}}/>
                 <Tabs.Screen name="DefualtListEditorAndMaker" options={{headerShown: true}} />
+                <Tabs.Screen name="EditDefaultList" options={{headerShown: true}} />
             </Tabs>
     )
 }

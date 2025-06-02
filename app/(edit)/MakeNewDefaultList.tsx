@@ -1,14 +1,18 @@
+import NewDefaultList from '@/components/NewDefaultList';
+import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { TouchableOpacity, Text, StyleSheet,Modal, View, TextInput } from 'react-native';
 import { red } from 'react-native-reanimated/lib/typescript/Colors';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-const StartNewDefaultListModal = () => {
+
+const AddDefaultModal = (props: string) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [itemName, setItemName] = useState("");
   const [display, setDisplay] = useState(false);
 
   const handlePress = () => {
-    console.log("Add Group Item Button Pressed");
+    console.log(`Add Group Item Button Pressed ${props}`);
     setModalVisible(true);
     // You can perform actions here, such as opening a modal or adding a group item to the list.
   };
@@ -19,13 +23,16 @@ const StartNewDefaultListModal = () => {
     }else{
       setDisplay(false);
       setModalVisible(!modalVisible);
-      console.log("Added New Item");
+      //add to defualt List
+      console.log("Added New List");
+      let tempVar = itemName;
+      //router.push()
       setItemName("");
     }
   }
 
   return (
-    <View>
+    <SafeAreaView>
       <Modal
           animationType="slide"
           transparent={true}
@@ -35,35 +42,37 @@ const StartNewDefaultListModal = () => {
           }}>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <Text style={styles.modalText}>Add New Item</Text>
+              <Text style={styles.modalText}>Name New List</Text>
 
-              <Text>List Name</Text>
+              <Text>New Name</Text>
               <TextInput
                 style={styles.input}
                 onChangeText={setItemName}
                 value={itemName}
               />
-
               <TouchableOpacity
                 style={[styles.button, styles.buttonClose]}
                 onPress={() =>  addNewitem()}>
-                <Text style={styles.textStyle}>Start List</Text>
+                <Text style={styles.textStyle}>Submit</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.button, styles.buttonClose]}
-                onPress={() =>  {setModalVisible(false),
-                  setDisplay(false);}}>
+                onPress={() =>  {
+                  setModalVisible(false);
+                    router.replace("/(list)/DefualtListEditorAndMaker");
+                  ;}}>
                 <Text style={styles.textStyle}>Cancel</Text>
               </TouchableOpacity>
               {display && <Text style={styles.redText}>Fill In Box Before Submittings</Text>}
             </View>
           </View>
         </Modal>
-
+        
       <TouchableOpacity onPress={handlePress} style={styles.button}>
-        <Text style={styles.buttonText}>Start New List</Text>
+        <Text style={styles.buttonText}>Add New Item To List</Text>
       </TouchableOpacity>
-    </View>
+      <NewDefaultList />
+    </SafeAreaView>
   );
 };
 
@@ -126,4 +135,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default StartNewDefaultListModal;
+export default AddDefaultModal;

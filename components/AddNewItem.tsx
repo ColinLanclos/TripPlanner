@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import { TouchableOpacity, Text, StyleSheet,Modal, View, TextInput } from 'react-native';
-import { red } from 'react-native-reanimated/lib/typescript/Colors';
 
-
-const AddDefaultModal = (props: string) => {
+const AddNewItemButton = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [itemName, setItemName] = useState("");
   const [display, setDisplay] = useState(false);
 
   const handlePress = () => {
-    console.log(`Add Group Item Button Pressed ${props}`);
+    console.log("Add Group Item Button Pressed");
     setModalVisible(true);
     // You can perform actions here, such as opening a modal or adding a group item to the list.
   };
@@ -38,16 +36,17 @@ const AddDefaultModal = (props: string) => {
             <View style={styles.modalView}>
               <Text style={styles.modalText}>Add New Item</Text>
 
-              <Text>Item Name</Text>
+              <Text>List Name</Text>
               <TextInput
                 style={styles.input}
                 onChangeText={setItemName}
                 value={itemName}
               />
+
               <TouchableOpacity
                 style={[styles.button, styles.buttonClose]}
                 onPress={() =>  addNewitem()}>
-                <Text style={styles.textStyle}>Add New Item</Text>
+                <Text style={styles.textStyle}>Start List</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.button, styles.buttonClose]}
@@ -61,7 +60,7 @@ const AddDefaultModal = (props: string) => {
         </Modal>
 
       <TouchableOpacity onPress={handlePress} style={styles.button}>
-        <Text style={styles.buttonText}>Add Personal Item</Text>
+        <Text style={styles.buttonText}>Add New Item</Text>
       </TouchableOpacity>
     </View>
   );
@@ -126,4 +125,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddDefaultModal;
+export default AddNewItemButton;

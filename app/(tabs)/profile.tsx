@@ -40,7 +40,7 @@ const ProfilePage = () => {
 
       {/* Make Default List Button */}
       <TouchableOpacity style={styles.button} onPress={handleMakeDefaultList}>
-        <Text style={styles.buttonText}>Make Default List</Text>
+        <Text style={styles.buttonText}>Edit/Create Default List</Text>
       </TouchableOpacity>
 
       {/* Edit Profile Button */}
