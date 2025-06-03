@@ -14,6 +14,7 @@ const _layout = () => {
                 <Tabs.Screen name="TripPeopleList" options={{headerShown: true}}/>
                 <Tabs.Screen name="DefualtListEditorAndMaker" options={{headerShown: true}} />
                 <Tabs.Screen name="EditDefaultList" options={{headerShown: true}} />
+                <Tabs.Screen name="Itinerary" options={{headerShown: true}} />
             </Tabs>
     )
 }

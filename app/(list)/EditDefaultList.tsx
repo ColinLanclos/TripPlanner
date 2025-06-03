@@ -1,4 +1,3 @@
-import AddDefaultModal from "@/components/AddDefualtModal";
 import { useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
 import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet, FlatList } from "react-native";

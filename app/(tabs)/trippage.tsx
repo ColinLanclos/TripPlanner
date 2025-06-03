@@ -36,6 +36,10 @@ const styles = StyleSheet.create({
       fontSize: 18,                 // Font size
       fontWeight: 'bold',           // Bold text
     },
+    centeredWrapper: {
+      alignItems: 'center',
+      marginTop: 20, // optional spacing
+    },
   });
   
 
@@ -46,7 +50,20 @@ export default function TripPage() {
           <View className="mt-5">
             <Text>Ntn</Text>
             <TripPlanComp /> 
+            <View style={styles.centeredWrapper}>
+              <TouchableOpacity
+                onPress={() => {
+                  router.push("/(list)/Itinerary");
+                  console.log("Pressed?");
+                }}
+                style={styles.button}
+              >
+                <Text style={styles.buttonText}>Itinerary</Text>
+              </TouchableOpacity>
+            </View>
+
             <View style={styles.container}>
+              
                 <TouchableOpacity
                     onPress={() => { router.push("/(list)/grocerylist"); console.log("Pressed?"); }}
                     style={styles.button}
