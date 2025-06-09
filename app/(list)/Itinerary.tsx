@@ -4,17 +4,17 @@ import { withRepeat } from 'react-native-reanimated';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 const itinerary = {
   "June 1": {
-    "11:00 - 3:00": {
+    "11:00 AM - 3:00 PM": {
       description: "Breaching",
       where: "Whale Bay",
     },
-    "4:00 - 6:00": {
+    "4:00 PM - 6:00 PM ": {
       description: "Beach Picnic",
       where: "Sunset Shore",
     },
   },
   "June 2": {
-    "9:00 - 10:30": {
+    "9:00 AM - 10:30 AM": {
       description: "Morning Hike",
       where: "Eagle Trail",
     },
@@ -25,12 +25,20 @@ const Itinerary = () => {
   const [modalAddToDateVisible, setModalAddToDateVisible] = useState(false);
   const [display, setDisplay] = useState(false);
   const [date, setDate] = useState("")
-  const [datePick, setDatePicker] = useState(new Date())
-  const [timeFrame, setTimeFrame] = useState("");
   const [newWhere , setNewWhere] = useState("");
   const [newDisription, setNewDiscription] = useState("");
-  const [open, setOpen] = useState(false)
-  const [showTimePicker, setShowTimePicker] = useState(false);
+  const [showTimePickerStart, setShowTimePickerSart] = useState(false);
+  const [showTimePickerEnd, setShowTimePickerEnd] = useState(false);
+  const [startTime, setStartTime] = useState("")
+  const [endTime, setEndTime] = useState("")
+
+  const [editDate, setEditDate] = useState("");
+  const [orginalEditDate, setOrginalEditDate] = useState("");
+  const [editStartTime, setEditStartTime] = useState("");
+  const [editEndTime, setEditEndTime] = useState("");
+  const [editDescrition, setEditDescrition] = useState("");
+  const [editWhere, setEditWhere] = useState("");
+  const [isVisibleEditModal, setIsVisibleEditModal] = useState(false);
 
   const handleAddEvent = (date: string) => {
     console.log(`Add event to ${date}`);
@@ -39,17 +47,65 @@ const Itinerary = () => {
   };
 
 
-  const handleEditEvent = (date: string, time: string) => {
+  const handleEditEvent = (date: string, time: string, description: string, where: string  ) => {
     console.log(`Edit event on ${date} at ${time}`);
-    // Trigger modal, route push, or inline edit
+    setEditDate(date);
+    setOrginalEditDate(time);
+    const [startStr, endStr] = time.split(" - ").map(str => str.trim());
+    setEditStartTime(startStr)
+    setEditEndTime(endStr);
+    setEditDescrition(description);
+    setEditWhere(where);
+    setIsVisibleEditModal(true);
   };
 
-  const handleConfirm = (date: any) => {
-    console.warn("A date has been picked: ", date);
-    setShowTimePicker(false);
+  const handleConfirmEditStart= (date: any) => {
+    console.warn("A start stime has been picked: ", date);
+    let hour = date.getHours();
+    let amppm = hour < 12 ? "AM" : "PM"; 
+    let min = date.getMinutes().toString().padStart(2, '0');
+    let hourR = hour % 12;
+    const realTime = hourR + ":" + min + " "+ amppm; 
+    setEditStartTime(realTime);
+    setShowTimePickerSart(false);
   };
+
+  const handleConfirmEditEnd= (date: any) => {
+    console.warn("A start stime has been picked: ", date);
+    let hour = date.getHours();
+    let amppm = hour < 12 ? "AM" : "PM"; 
+    let min = date.getMinutes().toString().padStart(2, '0');
+    let hourR = hour % 12;
+    const realTime = hourR + ":" + min + " "+ amppm; 
+    setEditEndTime(realTime);
+    setShowTimePickerSart(false);
+  };
+
+  const handleConfirmStart= (date: any) => {
+    console.warn("A start stime has been picked: ", date);
+    let hour = date.getHours();
+    let amppm = hour < 12 ? "AM" : "PM"; 
+    let min = date.getMinutes().toString().padStart(2, '0');
+    let hourR = hour % 12;
+    const realTime = hourR + ":" + min + " "+ amppm; 
+    setStartTime(realTime);
+    setShowTimePickerSart(false);
+  };
+
+  const handleConfirmEnd= (date: any) => {
+    console.warn("A end time has been picked: ", date);
+    let hour = date.getHours();
+    let amppm = hour < 12 ? "AM" : "PM"; 
+    let min = date.getMinutes().toString().padStart(2, '0');
+    let hourR = hour % 12;
+    const realTime = hourR + ":" + min + " "+ amppm; 
+    setEndTime(realTime);
+    setShowTimePickerEnd(false);
+  };
+
   const hideDatePicker = () => {
-    setShowTimePicker(false);
+    setShowTimePickerSart(false);
+    setShowTimePickerEnd(false);
   };
 
 
@@ -57,8 +113,92 @@ const Itinerary = () => {
     throw new Error('Function not implemented.');
   }
 
+  function editEvent(): void {
+    throw new Error('Function not implemented.');
+  }
+
   return (
     <ScrollView style={styles.container}>
+
+      {/* modal to edit a specfic event */}
+      <Modal
+          animationType="slide"
+          transparent={true}
+          visible={isVisibleEditModal}
+          onRequestClose={() => {
+            setDisplay(false);
+            setEditDate("");
+            setEditWhere("");
+            setEditDescrition("")
+          }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>Add New Event To {editDate}</Text>
+
+              <Text>Time Frame</Text>
+              <DateTimePickerModal
+              date={new Date()}
+              display="spinner"
+                isVisible={showTimePickerStart}
+                mode="time"
+                onConfirm={handleConfirmEditStart}
+                onCancel={hideDatePicker}
+                pickerComponentStyleIOS={{height: 300}}
+              />
+
+            <DateTimePickerModal
+              date={new Date()}
+              display="spinner"
+                isVisible={showTimePickerEnd}
+                mode="time"
+                onConfirm={handleConfirmEditEnd}
+                onCancel={hideDatePicker}
+                pickerComponentStyleIOS={{height: 300}}
+              />
+
+              <TouchableOpacity
+                style={[styles.buttonModal, styles.buttonClose]}
+                onPress={() =>  setShowTimePickerSart(true)}>
+                <Text style={styles.textStyle}>Pick Starting Time: {editStartTime}</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.buttonModal, styles.buttonClose]}
+                onPress={() =>  setShowTimePickerEnd(true)}>
+                <Text style={styles.textStyle}>Pick End Time: {editEndTime}</Text>
+              </TouchableOpacity>
+
+              <Text>Where</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={setEditWhere}
+                value={editWhere}
+              />  
+
+              <Text>Description</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={setEditDescrition}
+                value={editDescrition}
+              />  
+
+              <TouchableOpacity
+                style={[styles.buttonModal, styles.buttonClose]}
+                onPress={() =>  editEvent()}>
+                <Text style={styles.textStyle}>Edit Event</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.buttonModal, styles.buttonClose]}
+                onPress={() =>  {setIsVisibleEditModal(false),
+                  setDisplay(false);}}>
+                <Text style={styles.textStyle}>Cancel</Text>
+              </TouchableOpacity>
+              {display && <Text style={styles.redText}>Fill In Both Boxes Before Submittings</Text>}
+            </View>
+          </View>
+        </Modal>
+      {/*modal to add on event */}
        <Modal
           animationType="slide"
           transparent={true}
@@ -77,30 +217,44 @@ const Itinerary = () => {
               <DateTimePickerModal
               date={new Date()}
               display="spinner"
-                isVisible={showTimePicker}
+                isVisible={showTimePickerStart}
                 mode="time"
-                onConfirm={handleConfirm}
+                onConfirm={handleConfirmStart}
+                onCancel={hideDatePicker}
+                pickerComponentStyleIOS={{height: 300}}
+              />
+
+            <DateTimePickerModal
+              date={new Date()}
+              display="spinner"
+                isVisible={showTimePickerEnd}
+                mode="time"
+                onConfirm={handleConfirmEnd}
                 onCancel={hideDatePicker}
                 pickerComponentStyleIOS={{height: 300}}
               />
 
               <TouchableOpacity
                 style={[styles.buttonModal, styles.buttonClose]}
-                onPress={() =>  setShowTimePicker(true)}>
-                <Text style={styles.textStyle}>Pick Times</Text>
+                onPress={() =>  setShowTimePickerSart(true)}>
+                <Text style={styles.textStyle}>Pick Starting Time: {startTime}</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.buttonModal, styles.buttonClose]}
+                onPress={() =>  setShowTimePickerEnd(true)}>
+                <Text style={styles.textStyle}>Pick End Time: {endTime}</Text>
               </TouchableOpacity>
 
               <Text>Where</Text>
               <TextInput
-                keyboardType='numeric'
                 style={styles.input}
                 onChangeText={setNewWhere}
                 value={newWhere}
               />  
 
-              <Text>Discrition</Text>
+              <Text>Description</Text>
               <TextInput
-                keyboardType='numeric'
                 style={styles.input}
                 onChangeText={setNewDiscription}
                 value={newDisription}
@@ -109,13 +263,18 @@ const Itinerary = () => {
               <TouchableOpacity
                 style={[styles.buttonModal, styles.buttonClose]}
                 onPress={() =>  addNewDateEvent()}>
-                <Text style={styles.textStyle}>Add New Item</Text>
+                <Text style={styles.textStyle}>Add New Event</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 style={[styles.buttonModal, styles.buttonClose]}
                 onPress={() =>  {setModalAddToDateVisible(false),
-                  setDisplay(false);}}>
+                  setEndTime("");
+                  setStartTime("")
+                  setDisplay(false)
+                  setDate("");
+                  setNewWhere("");
+                  setNewDiscription("");}}>
                 <Text style={styles.textStyle}>Cancel</Text>
               </TouchableOpacity>
               {display && <Text style={styles.redText}>Fill In Both Boxes Before Submittings</Text>}
@@ -123,6 +282,7 @@ const Itinerary = () => {
           </View>
         </Modal>
 
+        
       {Object.entries(itinerary).map(([date, events]) => (
         <View key={date} style={styles.dateSection}>
           <View style={styles.dateHeader}>
@@ -136,7 +296,7 @@ const Itinerary = () => {
             <View key={time} style={styles.eventItem}>
               <View style={styles.timeRow}>
                 <Text style={styles.timeText}>{time}</Text>
-                <TouchableOpacity onPress={() => handleEditEvent(date, time)} style={styles.editButton}>
+                <TouchableOpacity onPress={() => handleEditEvent(date, time, details.description, details.where)} style={styles.editButton}>
                   <Text style={styles.editButtonText}>Edit</Text>
                 </TouchableOpacity>
               </View>
