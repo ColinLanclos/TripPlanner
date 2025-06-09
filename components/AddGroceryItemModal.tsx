@@ -15,7 +15,7 @@ const AddGroupItemButton = () => {
   };
 
   function addNewitem() {
-    if(!itemName && !amount){
+    if(!itemName || !amount){
       setDisplay(true);
     }else{
       setDisplay(false);

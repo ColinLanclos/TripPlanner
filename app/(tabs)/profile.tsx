@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import { push } from 'expo-router/build/global-state/routing';
+import EditProfileModal from '@/components/EditProfileModal';
+
+
+
 
 const ProfilePage = () => {
+
+
   const handleLogout = () => {
     router.push('/login');
   };
@@ -44,9 +50,7 @@ const ProfilePage = () => {
       </TouchableOpacity>
 
       {/* Edit Profile Button */}
-      <TouchableOpacity style={styles.button} onPress={handleEditProfile}>
-        <Text style={styles.buttonText}>Edit Profile</Text>
-      </TouchableOpacity>
+      <EditProfileModal name={"jim bob"} phone={"12323"} />
 
       {/* Change Password Button */}
       <TouchableOpacity style={styles.button} onPress={handleChangePassword}>
