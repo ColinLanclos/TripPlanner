@@ -1,11 +1,27 @@
 import { router } from 'expo-router';
-import React from 'react';
+import {useState} from 'react';
 import { StyleSheet, TextInput, Text, TouchableOpacity, View, ScrollView } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const LoginForm = () => {
-  const [emailInput, onChangeEmail] = React.useState('');
-  const [passwordInput, onChangePassword] = React.useState('');
+  const [emailInput, onChangeEmail] = useState('');
+  const [passwordInput, onChangePassword] = useState('');
+  const [peepPassword, setPeepPassword] = useState(true);
+  const [showRedText, setShowRedText] = useState(false);
+  const [wrongPWEmail, setWrongPWEmail] = useState(false);
+
+  function onSubmit(){
+      if(!emailInput || !passwordInput){
+        setShowRedText(true);
+      }else if(true){
+        setShowRedText(false);
+        //check firebase
+        setWrongPWEmail(true);
+      }else{
+        //log them in
+      }
+    }
 
   return (
     <SafeAreaProvider>
@@ -28,19 +44,27 @@ const LoginForm = () => {
 
           {/* Password Input */}
           <View style={styles.inputGroup}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
             <Text style={styles.label}>Password</Text>
+            <TouchableOpacity onPress={() => setPeepPassword(!peepPassword)} style={{ padding: 10 }}>
+              <Icon name={!peepPassword ? 'visibility' : 'visibility-off'} size={24} />
+            </TouchableOpacity>
+          </View>
             <TextInput
               style={styles.input}
               onChangeText={onChangePassword}
               value={passwordInput}
               placeholder="Enter your password"
-              secureTextEntry={true}
+              secureTextEntry={peepPassword}
+              autoComplete="off"
             />
           </View>
+          {showRedText && <Text style={styles.redText}>Please Fill in All Boxes</Text>}
+          {wrongPWEmail && <Text style={styles.redText}>Password And/Or Email is Not Found</Text>}
 
           {/* Login Button */}
           <TouchableOpacity
-            onPress={() => console.log('Login')}
+            onPress={() => onSubmit()}
             style={styles.loginButton}
           >
             <Text style={styles.loginButtonText}>Login</Text>
@@ -63,6 +87,11 @@ const LoginForm = () => {
 };
 
 const styles = StyleSheet.create({
+  redText: {
+    color: 'red',
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
   safeArea: {
     flex: 1,
   },
