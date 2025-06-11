@@ -1,8 +1,12 @@
 import { router } from 'expo-router';
+import { Firestore } from 'firebase/firestore';
 import {useState} from 'react';
 import { StyleSheet, TextInput, Text, TouchableOpacity, View, ScrollView } from 'react-native';
+import { ColorProperties } from 'react-native-reanimated/lib/typescript/Colors';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { auth } from  "../firebaseConfig"
+import {createUserWithEmailAndPassword, getAuth, signOut} from  "firebase/auth"
 
 const LoginForm = () => {
   const [emailInput, onChangeEmail] = useState('');
@@ -14,14 +18,34 @@ const LoginForm = () => {
   function onSubmit(){
       if(!emailInput || !passwordInput){
         setShowRedText(true);
-      }else if(true){
-        setShowRedText(false);
-        //check firebase
-        setWrongPWEmail(true);
-      }else{
-        //log them in
+      }else {
+        createUserWithEmailAndPassword(auth, emailInput, passwordInput)
+        .then(() => {
+          console.log('User account created & signed in!');
+        })
+        .catch(error => {
+          if (error.code === 'auth/email-already-in-use') {
+            console.log('That email address is already in use!');
+          }
+
+          if (error.code === 'auth/invalid-email') {
+            console.log('That email address is invalid!');
+          }
+
+          console.error(error);
+        });
       }
     }
+
+  function testing(): void {
+    const user = auth.currentUser;
+
+    if(!user){
+      console.log("yay");
+    }else{
+      signOut(auth).then(() => console.log("signed out"));
+    }
+  }
 
   return (
     <SafeAreaProvider>
@@ -74,6 +98,13 @@ const LoginForm = () => {
             style={styles.loginButton}
           >
             <Text style={styles.loginButtonText}>Sign Up</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => testing()}
+            style={styles.loginButton}
+          >
+            <Text style={styles.loginButtonText}>Was Up</Text>
           </TouchableOpacity>
 
           {/* Reset Password Link */}

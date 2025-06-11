@@ -3,6 +3,7 @@ import React from "react";
 import { Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SignUpForm from "@/components/SignUpForm";
+
 //import LoginForm from "@/components/LoginForm";
 const style = StyleSheet.create({
   colorText: {
