@@ -3,6 +3,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import { push } from 'expo-router/build/global-state/routing';
 import EditProfileModal from '@/components/EditProfileModal';
+import CheckForLoginComp from '@/components/checkForLoginComp';
 
 
 

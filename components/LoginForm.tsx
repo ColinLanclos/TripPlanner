@@ -1,12 +1,12 @@
 import { router } from 'expo-router';
 import { Firestore } from 'firebase/firestore';
 import {useState} from 'react';
-import { StyleSheet, TextInput, Text, TouchableOpacity, View, ScrollView } from 'react-native';
+import { StyleSheet, TextInput, Text, TouchableOpacity, View, ScrollView, Modal, ActivityIndicator } from 'react-native';
 import { ColorProperties } from 'react-native-reanimated/lib/typescript/Colors';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { auth } from  "../firebaseConfig"
-import {createUserWithEmailAndPassword, getAuth, signOut} from  "firebase/auth"
+import { signInWithEmailAndPassword, signOut} from  "firebase/auth"
 
 const LoginForm = () => {
   const [emailInput, onChangeEmail] = useState('');
@@ -14,25 +14,23 @@ const LoginForm = () => {
   const [peepPassword, setPeepPassword] = useState(true);
   const [showRedText, setShowRedText] = useState(false);
   const [wrongPWEmail, setWrongPWEmail] = useState(false);
+  const [loading, setLoading] = useState(false);
+  
 
   function onSubmit(){
       if(!emailInput || !passwordInput){
         setShowRedText(true);
       }else {
-        createUserWithEmailAndPassword(auth, emailInput, passwordInput)
+        signInWithEmailAndPassword(auth, emailInput, passwordInput)
         .then(() => {
-          console.log('User account created & signed in!');
+          console.log('Signed in!');
+          setLoading(false)
+          setWrongPWEmail(false);
         })
         .catch(error => {
-          if (error.code === 'auth/email-already-in-use') {
-            console.log('That email address is already in use!');
-          }
-
-          if (error.code === 'auth/invalid-email') {
-            console.log('That email address is invalid!');
-          }
-
+          setLoading(false);
           console.error(error);
+          setWrongPWEmail(true);
         });
       }
     }
@@ -111,6 +109,19 @@ const LoginForm = () => {
           <TouchableOpacity onPress={() => router.push("/(auth)/resetpassword")}>
             <Text style={styles.resetPasswordText}>Forgot Password?</Text>
           </TouchableOpacity>
+
+          {/* loading spinner overlay */}
+          <Modal
+            transparent={true}
+            animationType="none"
+            visible={loading}
+            onRequestClose={() => {}}
+          >
+            <View style={styles.overlay}>
+              <ActivityIndicator size="large" color="#fff" />
+              <Text style={styles.loadingText}>Processing...</Text>
+            </View>
+          </Modal>
         </ScrollView>
       </SafeAreaView>
     </SafeAreaProvider>
@@ -118,6 +129,17 @@ const LoginForm = () => {
 };
 
 const styles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  loadingText: {
+    marginTop: 10,
+    color: '#fff',
+    fontSize: 16,
+  },
   redText: {
     color: 'red',
     fontWeight: 'bold',
