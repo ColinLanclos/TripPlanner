@@ -55,7 +55,6 @@ const SignUpForm = () => {
   
         // Store user info in Firestore
         await setDoc(doc(db, "usernames", userName.toLowerCase()),{
-          
         }); 
         console.log("usernamed Logged")
 
@@ -76,7 +75,6 @@ const SignUpForm = () => {
         if (error.code === 'auth/invalid-email') {
           setRedTextForEmail(true);
           showErrorAlert("Invalid Email")
-
         }
         setLoading(false);
         showErrorAlert(error)
