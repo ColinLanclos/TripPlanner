@@ -4,11 +4,14 @@ import { router } from 'expo-router';
 import { push } from 'expo-router/build/global-state/routing';
 import EditProfileModal from '@/components/EditProfileModal';
 import CheckForLoginComp from '@/components/checkForLoginComp';
+import ChangePassword from '@/components/ChangePassword';
 
 
 
 
 const ProfilePage = () => {
+
+  const [showModal, setShowModal] = useState(false);
 
 
   const handleLogout = () => {
@@ -54,7 +57,14 @@ const ProfilePage = () => {
       <EditProfileModal name={"jim bob"} phone={"12323"} />
 
       {/* Change Password Button */}
-      <TouchableOpacity style={styles.button} onPress={handleChangePassword}>
+      <ChangePassword
+          visible={showModal}
+          onClose={() => setShowModal(false)}
+        />
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => setShowModal(true)}
+      >
         <Text style={styles.buttonText}>Change Password</Text>
       </TouchableOpacity>
 
