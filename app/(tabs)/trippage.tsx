@@ -2,10 +2,9 @@ import { ScrollView, Text, TouchableOpacity, View, StyleSheet } from "react-nati
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TripPlanComp from '@/components/TripPlanComp';
-import TripIinforamationComp from '@/components/TripInformationComp';
 import AttendingStatues from '@/components/AttendingStatues';
 import { router } from 'expo-router';
-import TripPeopleList from '../(list)/TripPeopleList';
+
 
 const styles = StyleSheet.create({
     container: {
@@ -93,7 +92,6 @@ export default function TripPage() {
                 </TouchableOpacity>
             </View>
             <AttendingStatues />
-            <TripIinforamationComp />
           </View>
         </ScrollView>
       </SafeAreaView>

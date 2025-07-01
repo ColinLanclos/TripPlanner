@@ -22,6 +22,8 @@ const CreateNewTripForm = () => {
   const [tripId, setTripId] = React.useState("");
 
   const putIntoOnwerTripList = async (tripId: string, username:string, userId: string) => {
+
+    const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
     try {
       await setDoc(doc(db, "users", userId, "trips",tripId), {
         title: TripTitle,
@@ -30,8 +32,31 @@ const CreateNewTripForm = () => {
         description: discription,
         owner: username,
       });
+
+      
+      //Make Grocery List
+      await setDoc(doc(db,"trip", tripId, "Grocery", "List"),{
+      }); 
+      console.log("Grocery List is made")
+      
+
+      //Group Item List
+      await setDoc(doc(db, "trip", tripId, "Group", "List"),{
+      });
+      console.log("Group List is made")
+
+      //Persnal Item List
+      await setDoc(doc(db, "trip", tripId, "PersonalList", username ),{
+      });
+      console.log("Persnal List is made")
+
+      //Guest List
+      await setDoc(doc(db,"trip", tripId, "Guest","List"),{
+      });
+      console.log("Guest List is made")
       
       console.log("Trip document successfully written.");
+      router.push("/(tabs)")
     } catch (error) {
       console.error("Error while adding trip document:", error);
     }
