@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { TouchableOpacity, Text, StyleSheet,Modal, View, TextInput } from 'react-native';
 import { red } from 'react-native-reanimated/lib/typescript/Colors';
+import { db, auth } from '@/firebaseConfig';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { doc, setDoc, updateDoc } from 'firebase/firestore';
 
 const AddGroupItemButton = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -14,12 +17,24 @@ const AddGroupItemButton = () => {
     // You can perform actions here, such as opening a modal or adding a group item to the list.
   };
 
-  function addNewitem() {
+  const addNewitem = async () => {
     if(!itemName || !amount){
       setDisplay(true);
     }else{
       setDisplay(false);
       setModalVisible(!modalVisible);
+      try{
+        const value = await AsyncStorage.getItem('tripId');
+        console.log(value)
+        const id = value as string;
+
+        const docRef = doc(db, "trip", id, "Grocery", "List")
+        await updateDoc(docRef, {
+          [itemName]: [amount , false]
+        });
+      }catch(error){
+        console.log(error)
+      }
       console.log("Added New Item");
       setAmount("");
       setItemName("");
