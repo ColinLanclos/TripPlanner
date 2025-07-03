@@ -1,11 +1,15 @@
+import { auth, db } from '@/firebaseConfig';
+import { arrayUnion, doc, getDoc, updateDoc } from 'firebase/firestore';
 import React, { useState } from 'react';
 import { TouchableOpacity, Text, StyleSheet,Modal, View, TextInput } from 'react-native';
-import { red } from 'react-native-reanimated/lib/typescript/Colors';
 
-const AddGroupItemButton = () => {
+type Props = {
+  thisId :string
+}
+
+const AddGroupItemButton = ({thisId}: Props) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [itemName, setItemName] = useState("");
-  const [amount, setAmount] = useState("");
   const [display, setDisplay] = useState(false);
 
   const handlePress = () => {
@@ -14,14 +18,32 @@ const AddGroupItemButton = () => {
     // You can perform actions here, such as opening a modal or adding a group item to the list.
   };
 
-  function addNewitem() {
-    if(!itemName || !amount){
+  const addNewitem = async() => {
+    if(!itemName ){
       setDisplay(true);
     }else{
+
+      try{
+        const userId = auth.currentUser?.uid;
+        if(!userId){
+          return;
+        }
+        const docRef = doc(db, "users", userId)
+        const data:any =  (await getDoc(docRef)).data()
+        const userName = data.userName
+        console.log(userName)
+  
+        const updateDocRef = doc(db, "trip", thisId,"Group","List")
+        await updateDoc(updateDocRef,{
+          [itemName]: arrayUnion(userName)
+        })
+        
+      }catch(error){
+        console.log(error);
+      }
       setDisplay(false);
       setModalVisible(!modalVisible);
       console.log("Added New Item");
-      setAmount("");
       setItemName("");
     }
   }
@@ -45,14 +67,6 @@ const AddGroupItemButton = () => {
                 onChangeText={setItemName}
                 value={itemName}
               />
-
-              <Text>Amount</Text>
-              <TextInput
-                keyboardType='numeric'
-                style={styles.input}
-                onChangeText={setAmount}
-                value={amount}
-              />  
 
               <TouchableOpacity
                 style={[styles.button, styles.buttonClose]}

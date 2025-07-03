@@ -67,7 +67,6 @@ const TripPeopleList = () => {
  
   const kickUser =  async (userName: string) =>{
     try{
-
       console.log(userName)
       const docRef = doc(db, "usernames",userName);
       const user: any =  await (await getDoc(docRef)).data();
