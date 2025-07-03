@@ -4,7 +4,7 @@ import { StyleSheet, TextInput, Text, TouchableOpacity, View, ScrollView } from 
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { auth, db } from "../firebaseConfig";
-import {addDoc, doc, getDoc, setDoc, collection } from "firebase/firestore";
+import {addDoc, doc, getDoc, setDoc, collection, writeBatch } from "firebase/firestore";
 import {getAuth} from "firebase/auth";
 
 const CreateNewTripForm = () => {
@@ -23,7 +23,6 @@ const CreateNewTripForm = () => {
 
   const putIntoOnwerTripList = async (tripId: string, username:string, userId: string) => {
 
-    const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
     try {
       await setDoc(doc(db, "users", userId, "trips",tripId), {
         title: TripTitle,
@@ -54,6 +53,12 @@ const CreateNewTripForm = () => {
       await setDoc(doc(db,"trip", tripId, "Guest","List"),{
       });
       console.log("Guest List is made")
+
+      //make plain Itenererary
+      await createPlainItenerary(tripId);
+      console.log("Itenererary Made")
+      
+
       
       console.log("Trip document successfully written.");
       router.push("/(tabs)")
@@ -61,7 +66,45 @@ const CreateNewTripForm = () => {
       console.error("Error while adding trip document:", error);
     }
 
+
   }
+
+  const createPlainItenerary =  async (tripId:string) =>{
+    const start = new Date(`${startDate}T00:00:00`);
+    const end = new Date(`${endDate}T00:00:00`);
+    const itineraryDates: string[] = [];
+  
+    for (
+      let date = new Date(start);
+      date <= end;
+      date.setDate(date.getDate() + 1)
+    ) {
+      itineraryDates.push(date.toISOString().split("T")[0]); // "YYYY-MM-DD"
+    }
+
+    try {
+      const batch = writeBatch(db);
+
+      itineraryDates.forEach((dateStr) => {
+        const docRef = doc(db,"trip", tripId, "Itinerary", dateStr);
+        batch.set(docRef, {
+          events: [], // or any default data structure you want
+        });
+      });
+
+    await batch.commit();
+
+
+      
+    } catch (error) {
+      console.log(error)
+    }
+
+  
+    console.log("Generated dates:", itineraryDates);
+  }
+
+
 
 
   const hideDatePicker = () => {
@@ -247,6 +290,7 @@ const CreateNewTripForm = () => {
           >
             <Text style={styles.submitButtonText}>Submit</Text>
           </TouchableOpacity>
+
         </ScrollView>
       </SafeAreaView>
     </SafeAreaProvider>
