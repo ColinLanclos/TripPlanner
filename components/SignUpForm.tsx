@@ -54,7 +54,7 @@ const SignUpForm = () => {
         const user = userCredential.user;
   
         // Store user info in Firestore
-        await setDoc(doc(db, "usernames", userName.toLowerCase()),{
+        await setDoc(doc(db, "usernames", userName.toLowerCase()),{ "id": user.uid
         }); 
         console.log("usernamed Logged")
 

@@ -1,3 +1,7 @@
+import { auth, db } from '@/firebaseConfig';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from 'expo-router';
+import { doc, updateDoc } from 'firebase/firestore';
 import React, { useState } from 'react';
 import { TouchableOpacity, Text, StyleSheet,Modal, View, TextInput } from 'react-native';
 import { red } from 'react-native-reanimated/lib/typescript/Colors';
@@ -13,10 +17,26 @@ const AddPersonalItemModal = () => {
     // You can perform actions here, such as opening a modal or adding a group item to the list.
   };
 
-  function addNewitem() {
+  const addNewitem = async() => {
     if(!itemName){
       setDisplay(true);
     }else{
+      try{
+        const userId = auth.currentUser?.uid
+        if(!userId){
+          router.push("/(auth)/login");
+          return
+        }
+        const value = await AsyncStorage.getItem('tripId');
+        const tripId = value as string;
+        const docRef = doc(db, "trip", tripId,"PersonalList", userId)
+        await updateDoc(docRef, {
+          [itemName]: false
+        })
+    
+      }catch(error){
+        console.log(error)
+      }
       setDisplay(false);
       setModalVisible(!modalVisible);
       console.log("Added New Item");

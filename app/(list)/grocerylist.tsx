@@ -2,24 +2,11 @@ import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import AddGroceryItemModal from "@/components/AddGroceryItemModal";
-import {db , auth} from "../../firebaseConfig"
+import {db } from "../../firebaseConfig"
 import { deleteField, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-/*
-const groceryList = [
-  { id: "1", name: "Apples", quantity: 5, checked: false },
-  { id: "2", name: "Bread", quantity: 2, checked: false },
-  { id: "3", name: "Milk", quantity: 1, checked: true },
-  { id: "4", name: "Eggs", quantity: 12, checked: false },
-  { id: "5", name: "Chicken", quantity: 3, checked: true },
-  { id: "6", name: "Chicken", quantity: 3, checked: true },
-  { id: "7", name: "Chicken", quantity: 3, checked: true },
-  { id: "8", name: "Chicken", quantity: 3, checked: true },
-  { id: "9", name: "Chicken", quantity: 3, checked: true },
-  { id: "10", name: "Chicken", quantity: 3, checked: true },
-];
-*/
+
 
 const GroceryList = () => {
   type GroceryItem = { label: string; count: number; bought: boolean };
@@ -61,11 +48,11 @@ const GroceryList = () => {
   grabGroceries();
   }, [])
 
-  const toggleChecked = async (id: string, count: number) => {
+  const toggleChecked = async (id: string, count: number, bought: boolean) => {
     const docRef = doc(db, "trip", tripId, "Grocery", "List");
     try{
     await updateDoc(docRef, {
-      [id]: [count , true]
+      [id]: [count , !bought]
     })
   }catch(error){
     console.log(error)
@@ -130,7 +117,7 @@ const GroceryList = () => {
                 </View>
               </View>
             </View>
-            <TouchableOpacity onPress={() => toggleChecked(item.label, item.count)} style={{ padding: 4 }}>
+            <TouchableOpacity onPress={() => toggleChecked(item.label, item.count, item.bought)} style={{ padding: 4 }}>
               <Ionicons
                 name={item.bought ? "checkbox" : "square-outline"}
                 size={28}
