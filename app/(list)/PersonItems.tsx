@@ -47,12 +47,13 @@ const ItemChecklist = () => {
             isChecked: value,
           })).sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));;
           setItems(items); // or transform it into a list if needed
+
           if(items.length === 0){
             console.log("got here")
             console.log(personalId)
             const listRef = collection(db, "users", personalId, "Default_List");
             try {
-              const docs =  await getDocs(listRef);
+            const docs =  await getDocs(listRef);
               
             const hopeData = docs.docs.map((doc) => ({
               id: doc.id,
@@ -68,11 +69,9 @@ const ItemChecklist = () => {
           }
         } else {
           console.log("No personal list found");
-
           const docRef = collection(db, "users", personalId, "DefualtList");
           const data =  await getDocs(docRef);
           console.log(data);
-        
           setItems([]); // or [] if you want to use an empty array instead
         }
       },
@@ -83,7 +82,6 @@ const ItemChecklist = () => {
       }
     );
     return () => unsubscribe();
-
     }
     getData();
   },[tripId])
@@ -146,9 +144,7 @@ const ItemChecklist = () => {
       acc[item] = false;
       return acc;
     }, {} as Record<string, boolean>);
-    
     await updateDoc(docRef, obj);
-
   }
 
   return (
@@ -174,7 +170,6 @@ const ItemChecklist = () => {
         )}
         />
         </>
-
       :
       <FlatList
         data={items}

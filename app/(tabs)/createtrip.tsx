@@ -16,7 +16,6 @@ export default function TabTwoScreen() {
       <SafeAreaView edges={["top"]}>
         <ScrollView className="container bg-white w-full h-full text-left">
           <View className="mt-5">
-            <Text>Ntn</Text>
             <CreateNewTripForm />
           </View>
         </ScrollView>

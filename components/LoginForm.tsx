@@ -35,16 +35,6 @@ const LoginForm = () => {
       }
     }
 
-  function testing(): void {
-    const user = auth.currentUser;
-
-    if(!user){
-      console.log("yay");
-    }else{
-      signOut(auth).then(() => console.log("signed out"));
-    }
-  }
-
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.safeArea}>
@@ -98,12 +88,6 @@ const LoginForm = () => {
             <Text style={styles.loginButtonText}>Sign Up</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => testing()}
-            style={styles.loginButton}
-          >
-            <Text style={styles.loginButtonText}>Was Up</Text>
-          </TouchableOpacity>
 
           {/* Reset Password Link */}
           <TouchableOpacity onPress={() => router.push("/(auth)/resetpassword")}>

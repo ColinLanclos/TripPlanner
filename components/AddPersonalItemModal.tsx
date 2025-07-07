@@ -1,7 +1,7 @@
 import { auth, db } from '@/firebaseConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, setDoc, updateDoc } from 'firebase/firestore';
 import React, { useState } from 'react';
 import { TouchableOpacity, Text, StyleSheet,Modal, View, TextInput } from 'react-native';
 import { red } from 'react-native-reanimated/lib/typescript/Colors';
@@ -30,10 +30,9 @@ const AddPersonalItemModal = () => {
         const value = await AsyncStorage.getItem('tripId');
         const tripId = value as string;
         const docRef = doc(db, "trip", tripId,"PersonalList", userId)
-        await updateDoc(docRef, {
+        await setDoc(docRef, {
           [itemName]: false
-        })
-    
+        }, { merge: true });
       }catch(error){
         console.log(error)
       }

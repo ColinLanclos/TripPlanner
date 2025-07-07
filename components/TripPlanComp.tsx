@@ -39,10 +39,8 @@ const TripPlanComp = () => {
     );
 
     return(
-        <View style={{justifyContent:'center',alignItems: 'center'}}>
-            <Text> 
+        <View style={{justifyContent:'center',alignItems: 'center'}}> 
                 <TripCard tripdId={tripId} />
-            </Text>
         </View>
     )
 }

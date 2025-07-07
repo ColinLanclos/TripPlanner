@@ -7,6 +7,7 @@ import CheckForLoginComp from '@/components/checkForLoginComp';
 import ChangePassword from '@/components/ChangePassword';
 import { collection, onSnapshot, doc } from 'firebase/firestore';
 import { auth, db } from '@/firebaseConfig';
+import { signOut } from '@firebase/auth';
 
 
 interface UserData {
@@ -57,7 +58,12 @@ const ProfilePage = () => {
 
 
   const handleLogout = () => {
-    router.push('/login');
+      const user = auth.currentUser;
+      if(!user){
+        console.log("yay");
+      }else{
+        signOut(auth).then(() => console.log("signed out"));
+      }
   };
 
   const handleEditProfile = () => {

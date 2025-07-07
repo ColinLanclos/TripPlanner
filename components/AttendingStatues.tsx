@@ -152,8 +152,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold',
         color: "#333",
-        textAlign: 'center',
-        marginBottom: 10,
+        textAlign: 'center'
     },
     subheader: {
         fontSize: 16,

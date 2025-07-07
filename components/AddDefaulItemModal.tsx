@@ -76,7 +76,7 @@ const AddDefaultItemModal: React.FC<MyModalProps> = ({visible , onClose, thisTri
                 {display && <Text style={styles.redText}>Fill In Box Before Submittings</Text>}
                 </View>
             </View>
-            </Modal>
+           </Modal>
         )}
 
     export default AddDefaultItemModal;

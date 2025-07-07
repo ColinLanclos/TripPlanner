@@ -87,8 +87,7 @@ const CreateNewTripForm = () => {
 
       itineraryDates.forEach((dateStr) => {
         const docRef = doc(db,"trip", tripId, "Itinerary", dateStr);
-        batch.set(docRef, {
-          events: [], // or any default data structure you want
+        batch.set(docRef, { // or any default data structure you want
         });
       });
 
