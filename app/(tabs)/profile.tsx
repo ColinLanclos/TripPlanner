@@ -1,17 +1,69 @@
-import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { useState, useEffect} from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ActivityIndicator, Modal } from 'react-native';
 import { router } from 'expo-router';
 import { push } from 'expo-router/build/global-state/routing';
 import EditProfileModal from '@/components/EditProfileModal';
+import CheckForLoginComp from '@/components/checkForLoginComp';
+import ChangePassword from '@/components/ChangePassword';
+import { collection, onSnapshot, doc } from 'firebase/firestore';
+import { auth, db } from '@/firebaseConfig';
+import { signOut } from '@firebase/auth';
 
+
+interface UserData {
+  email: string;
+  userName:string;
+};
 
 
 
 const ProfilePage = () => {
+  const [profileData, setProfileData] = useState<UserData | null>(null);
+  const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+      setLoading(true);
+      const uid = auth.currentUser?.uid;
+      if (!uid) {
+        console.error("User not logged in.");
+        return;
+      }
+    
+      const userDocRef = doc(db, "users", uid);
+      const unsubscribe = onSnapshot(userDocRef, (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setProfileData(data as UserData);
+          console.log("User doc data from snapshot:", data); // fresh data from Firestore
+        } else {
+          console.log("No such document!");
+        }
+      }, (error) => {
+        console.error("onSnapshot error:", error);
+      });
+    
+      return () => unsubscribe(); // clean up listener on unmount
+    }, []);
+    
+    useEffect(() => {
+      if (profileData) {
+        console.log("Profile data updated:", profileData.email, profileData.userName);
+      }
+      setLoading(false)
+    }, [profileData]);
+
+  const [showModal, setShowModal] = useState(false);
+
+
 
 
   const handleLogout = () => {
-    router.push('/login');
+      const user = auth.currentUser;
+      if(!user){
+        console.log("yay");
+      }else{
+        signOut(auth).then(() => console.log("signed out"));
+      }
   };
 
   const handleEditProfile = () => {
@@ -30,6 +82,18 @@ const ProfilePage = () => {
 
   return (
     <View style={styles.container}>
+      {/* loading spinner overlay */}
+      <Modal
+            transparent={true}
+            animationType="none"
+            visible={loading}
+            onRequestClose={() => {}}
+          >
+            <View style={styles.overlay}>
+              <ActivityIndicator size="large" color="#fff" />
+              <Text style={styles.loadingText}>Processing...</Text>
+            </View>
+      </Modal>
       {/* Profile Picture */}
       <Image
         source={{
@@ -39,10 +103,10 @@ const ProfilePage = () => {
       />
 
       {/* Name */}
-      <Text style={styles.name}>Jim Bob Poopy Pants</Text>
+      <Text style={styles.name}>{profileData?.userName}</Text>
 
       {/* Phone Number */}
-      <Text style={styles.phone}>1234567890</Text>
+      <Text style={styles.phone}>{profileData?.email}</Text>
 
       {/* Make Default List Button */}
       <TouchableOpacity style={styles.button} onPress={handleMakeDefaultList}>
@@ -50,10 +114,17 @@ const ProfilePage = () => {
       </TouchableOpacity>
 
       {/* Edit Profile Button */}
-      <EditProfileModal name={"jim bob"} phone={"12323"} />
+      <EditProfileModal userName={profileData?.userName ?? "Error"} email={profileData?.email ??"Error"} />
 
       {/* Change Password Button */}
-      <TouchableOpacity style={styles.button} onPress={handleChangePassword}>
+      <ChangePassword
+          visible={showModal}
+          onClose={() => setShowModal(false)}
+        />
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => setShowModal(true)}
+      >
         <Text style={styles.buttonText}>Change Password</Text>
       </TouchableOpacity>
 
@@ -66,6 +137,17 @@ const ProfilePage = () => {
 };
 
 const styles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  loadingText: {
+    marginTop: 10,
+    color: '#fff',
+    fontSize: 16,
+  },
   container: {
     flex: 1,
     alignItems: 'center',

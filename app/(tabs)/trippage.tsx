@@ -2,51 +2,17 @@ import { ScrollView, Text, TouchableOpacity, View, StyleSheet } from "react-nati
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TripPlanComp from '@/components/TripPlanComp';
-import TripIinforamationComp from '@/components/TripInformationComp';
 import AttendingStatues from '@/components/AttendingStatues';
 import { router } from 'expo-router';
-import TripPeopleList from '../(list)/TripPeopleList';
+import LeaveOrDeleteTrip from "@/components/LeaveOrDeleteTrip";
 
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      paddingTop: 5,
-      paddingHorizontal: 20,
-      flexDirection: 'row',
-      flexWrap: 'wrap', // Allow items to wrap
-      justifyContent: 'space-between', // Evenly space out buttons
-    },
-    button: {
-      backgroundColor: '#6e3b6e', // Purple background
-      paddingVertical: 12,         // Padding on top and bottom
-      paddingHorizontal: 20,       // Padding on the sides
-      marginBottom: 15,            // Spacing between buttons
-      borderRadius: 8,             // Rounded corners
-      alignItems: 'center',        // Center the text horizontally
-      justifyContent: 'center',    // Center the text vertically
-      width: '48%',                // Each button takes up roughly half the width
-      elevation: 3,                // Add shadow for Android
-      shadowColor: '#000',         // iOS shadow color
-      shadowOffset: { width: 0, height: 2 }, // Shadow offset
-      shadowOpacity: 0.2,          // Shadow opacity
-      shadowRadius: 4,             // Shadow blur radius
-    },
-    buttonText: {
-      color: '#fff',               // White text color
-      fontSize: 18,                 // Font size
-      fontWeight: 'bold',           // Bold text
-    },
-    centeredWrapper: {
-      alignItems: 'center',
-      marginTop: 20, // optional spacing
-    },
-  });
+  
   
 
 export default function TripPage() {
   return (
-      <SafeAreaView edges={["top",'bottom']}>
-        <ScrollView className="container bg-white w-full h-full text-left">
+      <SafeAreaView edges={["top"]}>
+        <ScrollView className="container bg-white w-full h-full text-left"  contentContainerStyle={{ paddingBottom: 100 }}>
           <View className="mt-5">
             <Text>Ntn</Text>
             <TripPlanComp /> 
@@ -61,9 +27,7 @@ export default function TripPage() {
                 <Text style={styles.buttonText}>Itinerary</Text>
               </TouchableOpacity>
             </View>
-
             <View style={styles.container}>
-              
                 <TouchableOpacity
                     onPress={() => { router.push("/(list)/grocerylist"); console.log("Pressed?"); }}
                     style={styles.button}
@@ -93,12 +57,68 @@ export default function TripPage() {
                 </TouchableOpacity>
             </View>
             <AttendingStatues />
-            <TripIinforamationComp />
+            <LeaveOrDeleteTrip />
           </View>
         </ScrollView>
       </SafeAreaView>
     );
-    
-
 }
+const styles = StyleSheet.create({
+  leaveButton: {
+    backgroundColor: '#ffaa00',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 12,
+  },
+  leaveButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  deleteButton: {
+    backgroundColor: '#FF3B30', // red
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  deleteButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  container: {
+    flex: 1,
+    paddingTop: 5,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    flexWrap: 'wrap', // Allow items to wrap
+    justifyContent: 'space-between', // Evenly space out buttons
+  },
+  button: {
+    backgroundColor: '#6e3b6e', // Purple background
+    paddingVertical: 12,         // Padding on top and bottom
+    paddingHorizontal: 20,       // Padding on the sides
+    marginBottom: 15,            // Spacing between buttons
+    borderRadius: 8,             // Rounded corners
+    alignItems: 'center',        // Center the text horizontally
+    justifyContent: 'center',    // Center the text vertically
+    width: '48%',                // Each button takes up roughly half the width
+    elevation: 3,                // Add shadow for Android
+    shadowColor: '#000',         // iOS shadow color
+    shadowOffset: { width: 0, height: 2 }, // Shadow offset
+    shadowOpacity: 0.2,          // Shadow opacity
+    shadowRadius: 4,             // Shadow blur radius
+  },
+  buttonText: {
+    color: '#fff',               // White text color
+    fontSize: 18,                 // Font size
+    fontWeight: 'bold',           // Bold text
+  },
+  centeredWrapper: {
+    alignItems: 'center',
+    marginTop: 20, // optional spacing
+  },
+});
+
 

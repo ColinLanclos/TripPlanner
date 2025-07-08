@@ -1,9 +1,13 @@
 import { router } from 'expo-router';
 import {useState} from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { StyleSheet, TextInput, Text, TouchableOpacity, View, ScrollView } from 'react-native';
+import { StyleSheet, TextInput, Text, TouchableOpacity, View, ScrollView, Alert, Modal, ActivityIndicator } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {auth, db } from "../firebaseConfig";
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { collection, setDoc, doc, getDoc } from 'firebase/firestore';
+import { configureReanimatedLogger } from 'react-native-reanimated';
 
 
 
@@ -11,6 +15,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 const SignUpForm = () => {
   const [userName, onChangeUsername] = useState('');
   const [emailInput, onChangeEmail] = useState('');
+  const [confirmEmailInput, onChangeConfirmEmail] = useState('');
   const [passwordInput, onChangePassword] = useState('');
   const [confirmPassword, onChangeNumberConfirmPassword] = useState('');
   const [redTextForAll, setRedTextForAll] = useState(false);
@@ -21,9 +26,62 @@ const SignUpForm = () => {
   const [redTextForConfirmPassword, setRedTextForConfirmPassword] = useState(false);
   const [peepPassword, setPeepPassword] = useState(true);
   const [redTextForEmailAlreadyUsed, setRedTextForEmailAlreadyUsed] = useState(false);
+  const [confirmEmailRedText, setConfirmEmailRedText] = useState(false);
+  const [loading, setLoading] = useState(false);
   
 
   async function onSubmit() {
+    setLoading(true);
+
+    
+    function showErrorAlert(message: string) {
+      Alert.alert(
+        "Error",
+        message,
+        [
+          { text: "OK" }
+        ],
+        { cancelable: true }
+      );
+    }
+
+
+    const signThemUp = async () => {
+      try {
+        // Create user
+        const userCredential = await createUserWithEmailAndPassword(auth, emailInput, passwordInput);
+        console.log("User Created")
+        const user = userCredential.user;
+  
+        // Store user info in Firestore
+        await setDoc(doc(db, "usernames", userName.toLowerCase()),{ "id": user.uid
+        }); 
+        console.log("usernamed Logged")
+
+        await setDoc(doc(db, "users", user.uid), {
+          userName: userName.toLowerCase(),
+          email: emailInput,
+        });
+        console.log("data stored ✅");
+        setLoading(false);
+        router.push("/(tabs)")
+        // Submit your form here (e.g., navigate or update state
+      } catch (error: any) {
+        // Handle Firebase Auth errors
+        if (error.code === 'auth/email-already-in-use') {
+          setRedTextForEmailAlreadyUsed(true);
+          showErrorAlert("Email Already Used")
+        }
+        if (error.code === 'auth/invalid-email') {
+          setRedTextForEmail(true);
+          showErrorAlert("Invalid Email")
+        }
+        setLoading(false);
+        showErrorAlert(error)
+       
+      }
+    }
+    
     let hasError = false;
   
     // Basic empty field check
@@ -42,14 +100,28 @@ const SignUpForm = () => {
     } else {
       setRedTextForUnvalidUserNamer(false);
   
-      // Replace with actual Firebase check
-      const isUsernameTaken = false; // await checkUsernameInFirebase(userName);
-      if (isUsernameTaken) {
+      //check for unque userName
+      try {
+        console.log("Checking username:", userName);
+        const checkForUserName = doc(db, "usernames", userName);
+        const isUser = await getDoc(checkForUserName);
+        console.log("After check");
+        console.log("Exists?", isUser.exists());
+      
+        if (isUser.exists()) {
+          setRedTextForNonUnqueUserName(true);
+          showErrorAlert("Username is Already in Use")
+          hasError = true;
+        } else {
+          setRedTextForNonUnqueUserName(false);
+          hasError = false;
+        }
+      } catch (error) {
+        console.error("Error checking for username:", error);
         setRedTextForNonUnqueUserName(true);
         hasError = true;
-      } else {
-        setRedTextForNonUnqueUserName(false);
       }
+      
     }
   
     // Email validation
@@ -59,13 +131,13 @@ const SignUpForm = () => {
       hasError = true;
     } else {
       setRedTextForEmail(false);
-  
-      // Replace with actual Firebase email check
-      const isEmailTaken = false; // await checkEmailInFirebase(emailInput);
-      if (isEmailTaken) {
-        setRedTextForEmailAlreadyUsed(true);
+      setConfirmEmailRedText(false);
+      if(confirmEmailInput != emailInput){
+        setConfirmEmailRedText(true);
         hasError = true;
       } else {
+        setConfirmEmailRedText(false);
+        setRedTextForEmail(false);
         setRedTextForEmailAlreadyUsed(false);
       }
     }
@@ -84,14 +156,18 @@ const SignUpForm = () => {
         setRedTextForConfirmPassword(false);
       }
     }
+
+
   
     // Final check
     if (!hasError) {
+      console.log("here")
       //firebase things
-      console.log("All Good ✅");
+      await signThemUp();
       // Submit your form here
     }else{
-      console.log("shit")
+      setLoading(false);
+      console.log("Damm")
     }
   }
   
@@ -115,7 +191,7 @@ const SignUpForm = () => {
             />
           </View>
           {redTextNonUnqueUserName && <Text style={styles.redText}>User Name Already Taken</Text>}
-          {redTextForUnvalidUserNamer && <Text style={styles.redText}>User Name has to be 5 Characters Long and No Spaces and No Upper Case</Text>}
+          {redTextForUnvalidUserNamer && <Text style={styles.redText}>User Name has to be between 5-15 Characters and No Spaces and No Upper Case</Text>}
 
           {/* Email Input */}
           <View style={styles.inputGroup}>
@@ -132,7 +208,21 @@ const SignUpForm = () => {
           {redTextForEmail && <Text style={styles.redText}>Not A Valid Email</Text>}
           {redTextForEmailAlreadyUsed && <Text style={styles.redText}>Email Already Used</Text>}
 
+          {/*Confirm Email */}
+          <View style={styles.inputGroup}>
+          <Text style={styles.label}>Confirm Email</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={onChangeConfirmEmail}
+                placeholder="Enter your email"
+                value={confirmEmailInput}
+                keyboardType="email-address"
+                autoComplete="off"
+              />
+          </View>
+          {confirmEmailRedText && <Text style={styles.redText}>Emails do not match.</Text>}
 
+          
           {/* Password Input */}
           <View style={styles.inputGroup}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -180,7 +270,7 @@ const SignUpForm = () => {
 
           {/* Submit Button */}
           <TouchableOpacity
-            onPress={() => onSubmit()}
+            onPress={ async () => onSubmit()}
             style={styles.submitButton}
           >
             <Text style={styles.submitButtonText}>Sign Up</Text>
@@ -192,6 +282,19 @@ const SignUpForm = () => {
           <TouchableOpacity onPress={() => router.push("/(auth)/login")}>
             <Text style={styles.linkText}>Already have an account? Login</Text>
           </TouchableOpacity>
+
+          {/* loading spinner overlay */}
+          <Modal
+            transparent={true}
+            animationType="none"
+            visible={loading}
+            onRequestClose={() => {}}
+          >
+            <View style={styles.overlay}>
+              <ActivityIndicator size="large" color="#fff" />
+              <Text style={styles.loadingText}>Processing...</Text>
+            </View>
+          </Modal>
         </ScrollView>
       </SafeAreaView>
     </SafeAreaProvider>
@@ -199,6 +302,17 @@ const SignUpForm = () => {
 };
 
 const styles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  loadingText: {
+    marginTop: 10,
+    color: '#fff',
+    fontSize: 16,
+  },
 redText: {
     color: 'red',
     fontWeight: 'bold',

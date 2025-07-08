@@ -1,9 +1,101 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { RadioButton } from 'react-native-paper';
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { auth, db } from "@/firebaseConfig";
 
 const AttendingStatues = () => {
-    const [checked, setChecked] = React.useState('going');
+    const [checked, setChecked] = React.useState('');
+
+    //chekcing going statues
+    useEffect(() => {
+        const checkStatues = async () => {
+        const value = await AsyncStorage.getItem('tripId');
+        if(!value){
+            return;
+        }
+        try{
+        const docRef = doc(db, "trip" ,value, "Guest", "List");
+        const existingDoc = await getDoc(docRef);
+        if (!existingDoc.exists()) {
+          console.log("List document does not exist.");
+          return;
+        }
+        const userId = auth.currentUser?.uid;
+        if(!userId){
+            return;
+        }
+        const userDoc = await getDoc(doc(db ,'users' , userId ));
+        const userNameData: any = userDoc.data();
+        const username: string = userNameData.userName; 
+        
+    
+        const userArray = existingDoc.data()[username];
+        console.log(" right here here here ")
+        console.log(userArray[0])
+        setChecked(userArray[0])
+    }catch(error){
+        console.log(error)
+    }
+        }
+        checkStatues();
+    },[]);
+
+    //updating going statues
+    useEffect(() => {
+        const updateStatus = async () => {
+            const value = await AsyncStorage.getItem('tripId');
+            if(!value){
+                return;
+            }
+            //get username
+            const userId = auth.currentUser?.uid;
+            
+
+            if(userId){
+                const userDoc = await getDoc(doc(db ,'users' , userId ));
+                const userNameData: any = userDoc.data();
+                const username: string = userNameData.userName; 
+                console.log(username)
+                
+                const docRef = doc(db, "trip" ,value, "Guest", "List");
+                try {
+                    // Get the existing array for that user first
+                    const existingDoc = await getDoc(docRef);
+                    if (!existingDoc.exists()) {
+                      console.log("List document does not exist.");
+                      return;
+                    }
+                    
+                
+                    const userArray = existingDoc.data()[username];
+                    console.log(userArray);
+                
+                    if (!userArray || !Array.isArray(userArray)) {
+                      console.log("No array found for user:", username);
+                      return;
+                    }
+                
+                    // Replace first element (status)
+                    const updatedArray = [checked, ...userArray.slice(1)];
+                
+                    // Update only the user's field
+                    await updateDoc(docRef, {
+                      [username]: updatedArray,
+                    });
+                
+                    console.log("Status updated successfully.");
+                  } catch (error) {
+                    console.error("Failed to update status:", error);
+                  }
+
+            }
+
+        }
+        updateStatus();
+    },[checked])
+
 
     return(
         <View style={styles.container}> 
@@ -37,12 +129,12 @@ const AttendingStatues = () => {
             <View style={styles.radioOption}>
                 <RadioButton
                     uncheckedColor="red"
-                    value="notGoing"
-                    status={checked === 'notGoing' ? 'checked' : 'unchecked'}
-                    onPress={() => setChecked('notGoing')}
+                    value="Not Going"
+                    status={checked === 'Not Going' ? 'checked' : 'unchecked'}
+                    onPress={() => setChecked('No tGoing')}
                     color="#F44336" // Red for "Not Going"
                 />
-                <TouchableOpacity onPress={() => setChecked('notGoing')}>
+                <TouchableOpacity onPress={() => setChecked('Not Going')}>
                     <Text style={styles.radioLabel}>Not Going</Text>
                 </TouchableOpacity>
             </View>
@@ -60,8 +152,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold',
         color: "#333",
-        textAlign: 'center',
-        marginBottom: 10,
+        textAlign: 'center'
     },
     subheader: {
         fontSize: 16,

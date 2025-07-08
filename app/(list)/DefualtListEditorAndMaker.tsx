@@ -2,20 +2,34 @@ import { SafeAreaView, View, Text, TouchableOpacity, StyleSheet, Modal, TextInpu
 import { router } from 'expo-router';
 import DefaultListList from '@/components/DefaultListList';
 import { useState } from 'react';
+import {auth, db} from "../../firebaseConfig";
+import { setDoc, doc, collection, addDoc } from 'firebase/firestore';
 
 const DefaultListEditorAndMaker = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [itemName, setItemName] = useState("");
   const [display, setDisplay] = useState(false);
 
-  function addNewItem() {
+  async function addNewDefaultList() {
     if (!itemName) {
       setDisplay(true); // Show validation error
     } else {
       setDisplay(false);
       setModalVisible(false);
+
+      const userId = auth.currentUser?.uid
+      if(!userId){
+        console.log("User Not Found");
+        return;
+      }
+      try{
+      const colRef = doc(db, "users", userId, "Default_List", itemName);
+      await setDoc(colRef,{});
+      }catch(error){
+        console.log(error)
+      }
   
-      console.log("Added New List:", itemName);
+      
       let tempVar = itemName;
   
       // Navigate to a screen and pass item name
@@ -39,8 +53,8 @@ const DefaultListEditorAndMaker = () => {
           }}>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <Text style={styles.modalText}>Name New List</Text>
-              <Text>New Name</Text>
+              <Text style={styles.modalText}>Add New Defualt List</Text>
+              <Text>Default List Name</Text>
               <TextInput
                 style={styles.input}
                 onChangeText={setItemName}
@@ -48,7 +62,7 @@ const DefaultListEditorAndMaker = () => {
               />
               <TouchableOpacity
                 style={[styles.button, styles.buttonClose]}
-                onPress={() =>  addNewItem()}>
+                onPress={() =>  addNewDefaultList()}>
                 <Text style={styles.textStyle}>Submit</Text>
               </TouchableOpacity>
               <TouchableOpacity

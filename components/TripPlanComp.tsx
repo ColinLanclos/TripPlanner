@@ -21,6 +21,8 @@ const TripPlanComp = () => {
         const value = await AsyncStorage.getItem('tripId');
         console.log("Getting Trip Id")
         console.log(value)
+        const id = value as string;
+        onChangeTripId(id);
         if (value !== null) {
             // call to firebase and then we will see stuff
             onChangeTripId(value);
@@ -37,10 +39,8 @@ const TripPlanComp = () => {
     );
 
     return(
-        <View style={{justifyContent:'center',alignItems: 'center'}}>
-            <Text> 
-                <TripCard />
-            </Text>
+        <View style={{justifyContent:'center',alignItems: 'center'}}> 
+                <TripCard tripdId={tripId} />
         </View>
     )
 }

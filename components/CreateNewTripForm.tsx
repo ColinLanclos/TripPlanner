@@ -3,17 +3,111 @@ import React from 'react';
 import { StyleSheet, TextInput, Text, TouchableOpacity, View, ScrollView } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { auth, db } from "../firebaseConfig";
+import {addDoc, doc, getDoc, setDoc, collection, writeBatch } from "firebase/firestore";
+import {getAuth} from "firebase/auth";
 
 const CreateNewTripForm = () => {
   const [TripTitle, onChangeTripTitle] = React.useState('');
   const [destination, onChangeDestination] = React.useState('');
-  const [dates, onChangeDates] = React.useState('');
   const [startDate, setStartDate] = React.useState('Date 1');
   const [endDate, setEndDate] = React.useState('Date 2');
   const [showDatePickerStart, setShowDatePickerStart] = React.useState(false);
   const [showDatePickerEnd, setShowDatePickerEnd] = React.useState(false);
-  const [people, onChangePeople] = React.useState('');
   const [discription, onChangeDiscription] = React.useState('');
+  const [redTextTitle, setRedTextTitle] = React.useState(false);
+  const [redTextAddress, setRedAddress] = React.useState(false);
+  const [redTextDate, setRedTextDate] = React.useState(false);
+  const [redTextDescritions, setRedTextDescritions] = React.useState(false);
+  const [tripId, setTripId] = React.useState("");
+
+  const putIntoOnwerTripList = async (tripId: string, username:string, userId: string) => {
+
+    try {
+      await setDoc(doc(db, "users", userId, "trips",tripId), {
+        title: TripTitle,
+        address: destination,
+        dates: [startDate, endDate],
+        description: discription,
+        owner: username,
+      });
+
+      
+      //Make Grocery List
+      await setDoc(doc(db,"trip", tripId, "Grocery", "List"),{
+      }); 
+      console.log("Grocery List is made")
+      
+
+      //Group Item List
+      await setDoc(doc(db, "trip", tripId, "Group", "List"),{
+      });
+      console.log("Group List is made")
+
+      //Persnal Item List
+      await setDoc(doc(db, "trip", tripId, "PersonalList", username ),{
+      });
+      console.log("Persnal List is made")
+
+      //Guest List with host
+      await setDoc(doc(db,"trip", tripId, "Guest","List"),{
+        [username]: ["maybe", "https://www.google.com/imgres?imgurl=https%3A%2F%2Fmedia-cldnry.s-nbcnews.com%2Fimage%2Fupload%2Ft_fit-560w%2Cf_auto%2Cq_auto%3Abest%2Frockcms%2F2022-08%2F220805-domestic-cat-mjf-1540-382ba2.jpg&tbnid=ty1NnpaB6NiF6M&vet=10CAIQxiAoAGoXChMI8J-ryNKKjgMVAAAAAB0AAAAAEAg..i&imgrefurl=https%3A%2F%2Fwww.nbcnews.com%2Fthink%2Fopinion%2Fcats-cute-furry-cuddly-invasive-alien-species-rcna41768&docid=piOhAgIXuOy82M&w=560&h=373&q=cat&ved=0CAIQxiAoAGoXChMI8J-ryNKKjgMVAAAAAB0AAAAAEAg",[userId]]
+      });
+      console.log("Guest List is made")
+
+      //make plain Itenererary
+      await createPlainItenerary(tripId);
+      console.log("Itenererary Made")
+
+      
+      
+
+      
+      console.log("Trip document successfully written.");
+      router.push("/(tabs)")
+    } catch (error) {
+      console.error("Error while adding trip document:", error);
+    }
+
+
+  }
+
+  const createPlainItenerary =  async (tripId:string) =>{
+    const start = new Date(`${startDate}T00:00:00`);
+    const end = new Date(`${endDate}T00:00:00`);
+    const itineraryDates: string[] = [];
+  
+    for (
+      let date = new Date(start);
+      date <= end;
+      date.setDate(date.getDate() + 1)
+    ) {
+      itineraryDates.push(date.toISOString().split("T")[0]); // "YYYY-MM-DD"
+    }
+
+    try {
+      const batch = writeBatch(db);
+
+      itineraryDates.forEach((dateStr) => {
+        const docRef = doc(db,"trip", tripId, "Itinerary", dateStr);
+        batch.set(docRef, { // or any default data structure you want
+        });
+      });
+
+    await batch.commit();
+
+
+      
+    } catch (error) {
+      console.log(error)
+    }
+
+  
+    console.log("Generated dates:", itineraryDates);
+  }
+
+
+
 
   const hideDatePicker = () => {
     setShowDatePickerStart(false);
@@ -34,6 +128,70 @@ const CreateNewTripForm = () => {
     const day = date.getDate().toString().padStart(2, '0');
     
     setEndDate(`${year}-${month}-${day}`);
+  }
+
+  const onSubmit = async () => {
+    let hasError = false;
+
+    if (TripTitle === '') {
+      setRedTextTitle(true);
+      hasError = true;
+    } else {
+      setRedTextTitle(false);
+    }
+  
+    if (destination === '') {
+      setRedAddress(true);
+      hasError = true;
+    } else {
+      setRedAddress(false);
+    }
+  
+    if (startDate === 'Date 1' || endDate === 'Date 2') {
+      setRedTextDate(true);
+      hasError = true;
+    } else {
+      setRedTextDate(false);
+    }
+  
+    if (discription === '') {
+      setRedTextDescritions(true);
+      hasError = true;
+    } else {
+      setRedTextDescritions(false);
+    }
+
+    if(!hasError){
+      //grabbing user name
+      const userId = auth.currentUser?.uid;
+
+      if(userId){
+      const userDoc = await getDoc(doc(db ,'users' , userId ));
+      const userNameData: any = userDoc.data();
+      const username: string = userNameData.userName; 
+
+      //creating trip
+      try {
+        const docRef = await addDoc(collection(db, "trip"), {
+          title: TripTitle,
+          address: destination,
+          dates: [startDate, endDate],
+          description: discription,
+          owner: username,
+        });
+        putIntoOnwerTripList(docRef.id, username, userId )
+        console.log("Trip created with ID:", docRef.id);
+      } catch (error) {
+        console.error("Error while adding trip document:", error);
+      }
+      //setting trip within users trip list
+      console.log(tripId);
+      }
+    }else{
+      console.log("Something is not right");
+    }
+
+
   }
 
   return (
@@ -76,17 +234,20 @@ const CreateNewTripForm = () => {
               autoComplete="off"
             />
           </View>
+          {redTextTitle && <Text style={styles.redText}>Enter In a Title</Text>}
+          
 
           {/* Destination */}
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Destination</Text>
+            <Text style={styles.label}>Address</Text>
             <TextInput
               style={styles.input}
               onChangeText={onChangeDestination}
               value={destination}
-              placeholder="Destination"
+              placeholder="Adress"
             />
           </View>
+          {redTextAddress && <Text style={styles.redText}>Please Enter in Address</Text>}
 
           {/* Dates */}
           <View style={styles.inputGroup}>
@@ -102,38 +263,32 @@ const CreateNewTripForm = () => {
               </TouchableOpacity>
             </View>
           </View>
+          {redTextDate && <Text style={styles.redText}>Please Enter in both dates</Text>}
 
-          {/* People */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Invite People</Text>
-            <TextInput
-              style={styles.input}
-              onChangeText={onChangePeople}
-              value={people}
-              placeholder="People"
-            />
-          </View>
 
           {/* Description */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Description</Text>
             <TextInput
-              style={styles.input}
+              style={styles.inputDescription}
               onChangeText={onChangeDiscription}
               value={discription}
               placeholder="Description"
               multiline={true}
               numberOfLines={4}
+              maxLength={400}
             />
           </View>
+          {redTextDescritions && <Text style={styles.redText}>Enter In a Discrition</Text>}
 
           {/* Submit Button */}
           <TouchableOpacity
-            onPress={() => console.log('Submit')}
+            onPress={() => onSubmit()}
             style={styles.submitButton}
           >
             <Text style={styles.submitButtonText}>Submit</Text>
           </TouchableOpacity>
+
         </ScrollView>
       </SafeAreaView>
     </SafeAreaProvider>
@@ -141,6 +296,20 @@ const CreateNewTripForm = () => {
 };
 
 const styles = StyleSheet.create({
+  redText: {
+    color: 'red',
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  inputDescription: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    minHeight: 100,
+    textAlignVertical: 'top',
+    fontSize: 16
+  },
   safeArea: {
     flex: 1, // Ensures full screen usage
   },
@@ -185,20 +354,28 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  buttonToChooseDates: {
-    color: '#fff',
-    textAlign: 'center',
-    fontSize: 14,
-    fontWeight: '500',
-  },buttonRow: {
+  buttonRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-  },button: {
+  },
+  button: {
+    backgroundColor: '#4A90E2', // Modern blue
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    alignItems: 'center',
     flex: 1,
-    backgroundColor: '#007bff',
-    padding: 10,
-    borderRadius: 4,
-    marginHorizontal: 4,
+    marginHorizontal: 5,
+    elevation: 3, // For Android shadow
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+  buttonToChooseDates: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
 

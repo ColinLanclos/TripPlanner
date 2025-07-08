@@ -7,6 +7,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ListTripComp from '@/components/ListTripComp';
 import { Link } from 'expo-router';
+import CheckForLoginComp from '@/components/checkForLoginComp';
 
 export default function HomeScreen() {
   return (

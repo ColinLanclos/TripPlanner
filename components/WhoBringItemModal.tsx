@@ -2,14 +2,15 @@ import React, { useState } from 'react';
 import { Modal, StyleSheet, Text, Pressable, View, TouchableOpacity } from 'react-native';
 
 type Props = {
-  itemName: string;
+  people: string[];
 };
 
-const WhoBringItemModal: React.FC<Props> = ({ itemName }) => {
+const WhoBringItemModal: React.FC<Props> = ({ people: props }) => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [peeps, setPeeps] = useState<string[]>([]) 
 
   const OpenModalForBringing = () => {
-    console.log(itemName);
+    setPeeps(props)
     setModalVisible(true);
   };
 
@@ -27,7 +28,11 @@ const WhoBringItemModal: React.FC<Props> = ({ itemName }) => {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>{itemName}</Text>
+                {peeps.map((name:string, index:number) => (
+              <Text key={index} style={{fontSize: 18,fontWeight: "600", marginBottom:8, color: "#333", letterSpacing: 0.5 }}>
+                • {peeps[index]}
+              </Text>
+            ))}
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => setModalVisible(false)}

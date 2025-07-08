@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   FlatList,
   StatusBar,
@@ -11,49 +11,19 @@ import {
 } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {auth , db} from "../firebaseConfig"
+import { collection, doc, onSnapshot } from 'firebase/firestore';
 
 type ItemData = {
   id: string;
   title: string;
-  tripId: string;
   location: string; // Add location for fetching background image
-  startDate: string; // Start date for the trip
-  endDate: string; // End date for the trip
+  dates: ["" , ""]
 };
 
+
+
 const DATA: ItemData[] = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: 'Beach Vacation',
-    tripId: '12345',
-    location: '410 N Main St, Loreauville, LA 70552',
-    startDate: '2025-06-01',
-    endDate: '2025-06-10',
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    title: 'Mountain Adventure',
-    tripId: '67890',
-    location: 'Denver, CO',
-    startDate: '2025-07-01',
-    endDate: '2025-07-07',
-  },
-  {
-    id: '58694a0ff145571e29d72',
-    title: 'City Exploration',
-    tripId: '11223',
-    location: 'New York, NY',
-    startDate: '2025-08-15',
-    endDate: '2025-08-20',
-  },
-  {
-    id: '58694a0f-3dff-bd96-145571e29d72',
-    title: 'Desert Escape',
-    tripId: '44556',
-    location: 'Phoenix, AZ',
-    startDate: '2025-09-01',
-    endDate: '2025-09-05',
-  },
 ];
 
 type ItemProps = {
@@ -83,7 +53,7 @@ const Item = ({ item, onPress, backgroundColor, textColor }: ItemProps) => {
           
           {/* Display Dates */}
           <Text style={[styles.dates, { color: textColor }]}>
-            Dates: {item.startDate} - {item.endDate}
+            Dates: {item.dates[0]} - {item.dates[1]}
           </Text>
         </View>
       </ImageBackground>
@@ -92,6 +62,36 @@ const Item = ({ item, onPress, backgroundColor, textColor }: ItemProps) => {
 };
 
 const ListTripComp = () => {
+  const [DATA, setDATA] = useState<ItemData[]>()
+
+  useEffect( () => {
+    {/* grab userid*/}
+    const userId = auth.currentUser?.uid
+    if(!userId){
+      console.log("User Not Found");
+      return;
+    }
+  
+    const colRef = collection(db, "users", userId, "trips")
+    try{
+    const unsubscribe = onSnapshot(colRef, (querySnapshot) => {
+      const trips: any[] = [];
+      querySnapshot.forEach((doc) => {
+        trips.push({ id: doc.id, ...doc.data() });
+      });
+      setDATA(trips)
+      console.log('Trips:', trips);
+    });
+  
+    // ✅ Clean up the listener on unmount
+    return () => unsubscribe();
+  }catch(error){
+    console.log(error)
+  }
+  }, [])
+
+
+
   const [selectedId, setSelectedId] = useState<string>();
 
   const renderItem = ({ item }: { item: ItemData }) => {

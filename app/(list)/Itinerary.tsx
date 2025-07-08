@@ -1,7 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, TextInput } from 'react-native';
 import { withRepeat } from 'react-native-reanimated';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { collection, deleteField, doc, onSnapshot, setDoc, updateDoc } from 'firebase/firestore';
+import { db } from '@/firebaseConfig';
+
+type TimeBlock = {
+  description: string;
+  where: string;
+};
+
+type ItineraryDoc = {
+  id: string; // date, like "2025-07-05"
+  timeBlocks: Record<string, TimeBlock>;
+};
+
 const itinerary = {
   "June 1": {
     "11:00 AM - 3:00 PM": {
@@ -39,8 +53,42 @@ const Itinerary = () => {
   const [editDescrition, setEditDescrition] = useState("");
   const [editWhere, setEditWhere] = useState("");
   const [isVisibleEditModal, setIsVisibleEditModal] = useState(false);
+  const [tripId, setTripId] = useState("")
+  const [newItinerary, setNewItinerary] = useState<Record<string, Record<string, string[]>>>({});
 
-  const handleAddEvent = (date: string) => {
+  useEffect(() => {
+    const getItinerary = async () => {
+      const value = await AsyncStorage.getItem("tripId");
+      const id = value as string;
+      setTripId(id);
+  
+      const itineraryRef = collection(db, "trip", id, "Itinerary");
+  
+      const unsubscribe = onSnapshot(itineraryRef, (snapshot) => {
+        const itineraryObj: Record<string, Record<string, string[]>> = {};
+
+        snapshot.docs.forEach((doc) => {
+          itineraryObj[doc.id] = doc.data() as Record<string, string[]>;
+        });
+
+        
+      
+        // Optional: sort by date (keys)
+        const sortedItinerary = Object.fromEntries(
+          Object.entries(itineraryObj).sort(([a], [b]) => a.localeCompare(b))
+        );
+        console.log(sortedItinerary)
+        setNewItinerary(sortedItinerary);
+
+      });
+  
+      return unsubscribe;
+    };
+  
+    getItinerary();
+  }, []);
+
+  const handleAddEvent = async (date: string) => {
     console.log(`Add event to ${date}`);
     setDate(date);
     setModalAddToDateVisible(true);
@@ -51,9 +99,11 @@ const Itinerary = () => {
     console.log(`Edit event on ${date} at ${time}`);
     setEditDate(date);
     setOrginalEditDate(time);
-    const [startStr, endStr] = time.split(" - ").map(str => str.trim());
+    const [startStr, endStr] = time.split("-").map(str => str.trim());
     setEditStartTime(startStr)
     setEditEndTime(endStr);
+    setStartTime(startStr);
+    setEndTime(endStr);
     setEditDescrition(description);
     setEditWhere(where);
     setIsVisibleEditModal(true);
@@ -109,12 +159,49 @@ const Itinerary = () => {
   };
 
 
-  const addNewDateEvent = () => {
-    throw new Error('Function not implemented.');
+  const addNewDateEvent = async () => {
+    const timeFrame = startTime + "-" + endTime;
+    
+    try {
+      const docRef = doc(db,"trip",tripId, "Itinerary", date);
+      await setDoc(docRef,{
+        [timeFrame]: [newDisription, newWhere]
+      })
+      
+    } catch (error) {
+      console.log(error)
+    }
+    setModalAddToDateVisible(false)  
   }
 
-  function editEvent(): void {
-    throw new Error('Function not implemented.');
+  const editEvent = async () => {
+    try{
+      const docRef = doc(db, "trip", tripId, "Itinerary", editDate)
+      await updateDoc(docRef,{
+        [editStartTime + "-" + editEndTime]: deleteField()
+      })
+
+      console.log("wtf")
+      console.log(startTime)
+      console.log(endTime)
+      
+
+      await updateDoc(docRef,{
+        [startTime + "-" + endTime]: [editWhere,editDescrition]
+      })
+
+    }catch(error){
+      console.log(error)
+    }
+    setIsVisibleEditModal(false);
+  }
+
+  const deleteEvent = async () => {
+    const docRef = doc(db, "trip", tripId, "Itinerary", editDate)
+    await updateDoc(docRef,{
+      [editStartTime + "-" + editEndTime]: deleteField()
+    })
+    setIsVisibleEditModal(false)
   }
 
   return (
@@ -141,7 +228,7 @@ const Itinerary = () => {
               display="spinner"
                 isVisible={showTimePickerStart}
                 mode="time"
-                onConfirm={handleConfirmEditStart}
+                onConfirm={handleConfirmStart}
                 onCancel={hideDatePicker}
                 pickerComponentStyleIOS={{height: 300}}
               />
@@ -151,7 +238,7 @@ const Itinerary = () => {
               display="spinner"
                 isVisible={showTimePickerEnd}
                 mode="time"
-                onConfirm={handleConfirmEditEnd}
+                onConfirm={handleConfirmEnd}
                 onCancel={hideDatePicker}
                 pickerComponentStyleIOS={{height: 300}}
               />
@@ -190,6 +277,12 @@ const Itinerary = () => {
 
               <TouchableOpacity
                 style={[styles.buttonModal, styles.buttonClose]}
+                onPress={() =>  deleteEvent()}>
+                <Text style={styles.textStyle}>Delete Event</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.buttonModal, styles.buttonClose]}
                 onPress={() =>  {setIsVisibleEditModal(false),
                   setDisplay(false);}}>
                 <Text style={styles.textStyle}>Cancel</Text>
@@ -208,6 +301,7 @@ const Itinerary = () => {
             setDate("");
             setNewWhere("");
             setNewDiscription("")
+            setModalAddToDateVisible(false);
           }}>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
@@ -266,6 +360,9 @@ const Itinerary = () => {
                 <Text style={styles.textStyle}>Add New Event</Text>
               </TouchableOpacity>
 
+
+  
+
               <TouchableOpacity
                 style={[styles.buttonModal, styles.buttonClose]}
                 onPress={() =>  {setModalAddToDateVisible(false),
@@ -283,29 +380,32 @@ const Itinerary = () => {
         </Modal>
 
         
-      {Object.entries(itinerary).map(([date, events]) => (
-        <View key={date} style={styles.dateSection}>
-          <View style={styles.dateHeader}>
-            <Text style={styles.dateText}>{date}</Text>
-            <TouchableOpacity onPress={() => handleAddEvent(date)} style={styles.addButton}>
-              <Text style={styles.addButtonText}>＋</Text>
-            </TouchableOpacity>
-          </View>
-
-          {Object.entries(events).map(([time, details]) => (
-            <View key={time} style={styles.eventItem}>
-              <View style={styles.timeRow}>
-                <Text style={styles.timeText}>{time}</Text>
-                <TouchableOpacity onPress={() => handleEditEvent(date, time, details.description, details.where)} style={styles.editButton}>
-                  <Text style={styles.editButtonText}>Edit</Text>
-                </TouchableOpacity>
-              </View>
-              <Text style={styles.descText}>Description: {details.description}</Text>
-              <Text style={styles.whereText}>Where: {details.where}</Text>
-            </View>
-          ))}
+        {Object.entries(newItinerary).map(([date, events]) => (
+      <View key={date} style={styles.dateSection}>
+        <View style={styles.dateHeader}>
+          <Text style={styles.dateText}>{date}</Text>
+          <TouchableOpacity onPress={() => handleAddEvent(date)} style={styles.addButton}>
+            <Text style={styles.addButtonText}>＋</Text>
+          </TouchableOpacity>
         </View>
-      ))}
+
+    {Object.entries(events).map(([time, TimeBlock]) => (
+      <View key={time} style={styles.eventItem}>
+        <View style={styles.timeRow}>
+          <Text style={styles.timeText}>{time}</Text>
+          <TouchableOpacity
+            onPress={() => handleEditEvent(date, time, TimeBlock[0], TimeBlock[1])}
+            style={styles.editButton}
+          >
+            <Text style={styles.editButtonText}>Edit</Text>
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.descText}>Description: {TimeBlock[0]}</Text>
+        <Text style={styles.whereText}>Where: {TimeBlock[1]}</Text>
+      </View>
+    ))}
+  </View>
+))}
     </ScrollView>
   );
 }

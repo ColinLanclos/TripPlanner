@@ -1,7 +1,12 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import { getAuth } from "firebase/auth"
+import {
+    initializeAuth,
+    getReactNativePersistence,
+} from 'firebase/auth';
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+import { getFirestore } from 'firebase/firestore';
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -14,11 +19,13 @@ const firebaseConfig = {
     projectId: "tripplanner-39ddb",
     storageBucket: "tripplanner-39ddb.firebasestorage.app",
     messagingSenderId: "560093812797",
-    appId: "1:560093812797:web:e74ab3acce11ef26537254",
-    measurementId: "G-YDTENMHTQG"
+    appId: "1:560093812797:web:f08db0b5d8bc69c3537254",
+    measurementId: "G-ECTT0SS5K0"
 };
 
 // Initialize Firebase
-export const FIREBASE_APP = initializeApp(firebaseConfig);
-export const FIREBASE_AUTH = getAuth(FIREBASE_APP);
-const analytics = getAnalytics(app);
+const app = initializeApp(firebaseConfig);
+export const auth = initializeAuth(app, {
+    persistence: getReactNativePersistence(ReactNativeAsyncStorage),
+});
+export const db = getFirestore(app);
