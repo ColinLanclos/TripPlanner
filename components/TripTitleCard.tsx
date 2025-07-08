@@ -234,7 +234,10 @@ const TripCard = (tripId: any) => {
            </Modal>
 
            <Card style={styles.card}>
-              <Card.Title title={data?.title || 'Untitled Trip'} />
+           <Card.Title
+                title={data?.title || 'Untitled Trip'}
+                titleStyle={{ fontSize: 20, fontWeight: '600', color: '#2a2a2a' }}
+              />
 
               <Card.Cover
                 resizeMode="cover"

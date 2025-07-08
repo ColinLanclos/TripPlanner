@@ -3,7 +3,7 @@ import AddPersonalItemModal from "@/components/AddPersonalItemModal";
 import { auth, db } from "@/firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import { collection, deleteField, doc, getDocs, onSnapshot, updateDoc } from "firebase/firestore";
+import { collection, deleteField, doc, getDocs, onSnapshot, setDoc, updateDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View, FlatList } from "react-native";
 
@@ -153,7 +153,7 @@ const ItemChecklist = () => {
       acc[item] = false;
       return acc;
     }, {} as Record<string, boolean>);
-    await updateDoc(docRef, obj);
+    await setDoc(docRef, obj);
   }
 
   return (
