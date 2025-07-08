@@ -49,14 +49,17 @@ const CreateNewTripForm = () => {
       });
       console.log("Persnal List is made")
 
-      //Guest List
+      //Guest List with host
       await setDoc(doc(db,"trip", tripId, "Guest","List"),{
+        [username]: ["maybe", "https://www.google.com/imgres?imgurl=https%3A%2F%2Fmedia-cldnry.s-nbcnews.com%2Fimage%2Fupload%2Ft_fit-560w%2Cf_auto%2Cq_auto%3Abest%2Frockcms%2F2022-08%2F220805-domestic-cat-mjf-1540-382ba2.jpg&tbnid=ty1NnpaB6NiF6M&vet=10CAIQxiAoAGoXChMI8J-ryNKKjgMVAAAAAB0AAAAAEAg..i&imgrefurl=https%3A%2F%2Fwww.nbcnews.com%2Fthink%2Fopinion%2Fcats-cute-furry-cuddly-invasive-alien-species-rcna41768&docid=piOhAgIXuOy82M&w=560&h=373&q=cat&ved=0CAIQxiAoAGoXChMI8J-ryNKKjgMVAAAAAB0AAAAAEAg",[userId]]
       });
       console.log("Guest List is made")
 
       //make plain Itenererary
       await createPlainItenerary(tripId);
       console.log("Itenererary Made")
+
+      
       
 
       
@@ -178,16 +181,12 @@ const CreateNewTripForm = () => {
         });
         putIntoOnwerTripList(docRef.id, username, userId )
         console.log("Trip created with ID:", docRef.id);
-
       } catch (error) {
         console.error("Error while adding trip document:", error);
       }
-
       //setting trip within users trip list
       console.log(tripId);
-
       }
-
     }else{
       console.log("Something is not right");
     }

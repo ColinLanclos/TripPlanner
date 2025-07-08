@@ -23,7 +23,8 @@ const LeaveOrDeleteTrip = () => {
 
 
     const onDeletePress = async () => {
-
+        //delete from trips but will have to make a function in firebase 
+        
     }
      
     const onLeavePress = async () => {
@@ -50,48 +51,48 @@ const LeaveOrDeleteTrip = () => {
         const docUserTrip = doc(db, "users", userId, "trips", tripdId);
         await deleteDoc(docUserTrip);
         console.log("deleted in user data")
-
-
+        router.push("/(tabs)")
     }
 
-    useEffect(() =>{
-        const getData = async () => {
-            try {
-                const value = await AsyncStorage.getItem('tripId');
-                console.log("Getting Trip Id")
-                console.log(value)
-                const id = value as string;
-                setTripId(id);
-                const tripDocRef = doc(db, "trip", id)
-                const tripSnap = await getDoc(tripDocRef)
-                if (!tripSnap.exists()) {
-                    return
-                }
-                const tripOwner = tripSnap.data().owner;
+    useFocusEffect(
+      useCallback(() =>{
+          const getData = async () => {
+              try {
+                  const value = await AsyncStorage.getItem('tripId');
+                  console.log("Getting Trip Id")
+                  console.log(value)
+                  const id = value as string;
+                  setTripId(id);
+                  const tripDocRef = doc(db, "trip", id)
+                  const tripSnap = await getDoc(tripDocRef)
+                  if (!tripSnap.exists()) {
+                      return
+                  }
+                  const tripOwner = tripSnap.data().owner;
 
-                const userid = auth.currentUser?.uid;
-                if(!userid){
-                    return
-                }
-                const userRef = doc(db, "users", userid);
-                const userSnap = await getDoc(userRef);
+                  const userid = auth.currentUser?.uid;
+                  if(!userid){
+                      return
+                  }
+                  const userRef = doc(db, "users", userid);
+                  const userSnap = await getDoc(userRef);
 
-                if (!userSnap.exists()) {
-                    return
-                }
-                const userName = userSnap.data().userName;
-                setUsername(userName)
-                if(tripOwner != userName){
-                    setIsOwner(false);
-                }else{
-                    setIsOwner(true)
-                }
-            } catch (error) {
-                console.log(error)
-            }
-        }
-        getData();
-    },[])
+                  if (!userSnap.exists()) {
+                      return
+                  }
+                  const userName = userSnap.data().userName;
+                  setUsername(userName)
+                  if(tripOwner != userName){
+                      setIsOwner(false);
+                  }else{
+                      setIsOwner(true)
+                  }
+              } catch (error) {
+                  console.log(error)
+              }
+          }
+          getData();
+      },[tripdId]))
 
 
     return(
