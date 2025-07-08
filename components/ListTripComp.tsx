@@ -12,13 +12,14 @@ import {
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {auth , db} from "../firebaseConfig"
-import { collection, doc, onSnapshot } from 'firebase/firestore';
+import { collection, doc, onSnapshot, updateDoc } from 'firebase/firestore';
 
 type ItemData = {
   id: string;
   title: string;
   location: string; // Add location for fetching background image
   dates: ["" , ""]
+  seen: boolean
 };
 
 
@@ -48,11 +49,14 @@ const Item = ({ item, onPress, backgroundColor, textColor }: ItemProps) => {
         style={styles.itemBackground}
         imageStyle={{ borderRadius: 8 }}
       >
-        <View style={styles.itemTextContainer}>
-          <Text style={[styles.title, { color: textColor }]}>{item.title}</Text>
+        <View style={[
+              styles.itemTextContainer,
+              { backgroundColor: item.seen ? '#ffffff' : '#2c3e50' }, // light blue for unseen
+            ]}>
+          <Text style={[styles.title, { color: item.seen ? '#000000' : '#ffffff' }]}>{item.title}</Text>
           
           {/* Display Dates */}
-          <Text style={[styles.dates, { color: textColor }]}>
+          <Text style={[styles.dates, { color: item.seen ? '#000000' : '#ffffff' }]}>
             Dates: {item.dates[0]} - {item.dates[1]}
           </Text>
         </View>
@@ -73,21 +77,38 @@ const ListTripComp = () => {
     }
   
     const colRef = collection(db, "users", userId, "trips")
-    try{
-    const unsubscribe = onSnapshot(colRef, (querySnapshot) => {
-      const trips: any[] = [];
-      querySnapshot.forEach((doc) => {
-        trips.push({ id: doc.id, ...doc.data() });
-      });
-      setDATA(trips)
-      console.log('Trips:', trips);
-    });
-  
-    // ✅ Clean up the listener on unmount
-    return () => unsubscribe();
-  }catch(error){
-    console.log(error)
-  }
+    try {
+      const unsubscribe = onSnapshot(
+        colRef,
+        (querySnapshot) => {
+          const seenTrips: any[] = [];
+          const unseenTrips: any[] = [];
+    
+          querySnapshot.forEach((doc) => {
+            const trip = { id: doc.id, ...doc.data() };
+            if (doc.data().seen) {
+              seenTrips.push(trip);
+            } else {
+              unseenTrips.push(trip);
+            }
+          });
+    
+          const sortedTrips = [...unseenTrips, ...seenTrips]; // unseen first
+          setDATA(sortedTrips);
+          console.log('Trips:', sortedTrips);
+        },
+        (error) => {
+          // 🔴 Catch real-time listener errors here
+          console.error('onSnapshot error:', error);
+        }
+      );
+    
+      // ✅ Cleanup on unmount
+      return () => unsubscribe();
+    } catch (error) {
+      // 🔴 This only catches synchronous errors (rare here)
+      console.error('Error setting up listener:', error);
+    }
   }, [])
 
 
@@ -98,11 +119,23 @@ const ListTripComp = () => {
     const backgroundColor = item.id === selectedId ? '#6e3b6e' : '#f9c2ff';
     const color = item.id === selectedId ? 'white' : 'white';
 
+    const updateSeen =  async (id: string ) => {
+      const userId = auth.currentUser?.uid;
+      if(!userId){
+        return
+      }
+      const seenRefDoc = doc(db,"users", userId, "trips", id)
+      await updateDoc(seenRefDoc,{
+        seen: true
+      })
+    }
+
     return (
       <Item
         item={item}
         onPress={async () => {
           setSelectedId(item.id);
+          await updateSeen(item.id)
           await removeValue();
           await storeData(item.id);
           router.push('/(tabs)/trippage');
@@ -122,6 +155,9 @@ const ListTripComp = () => {
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
           extraData={selectedId}
+          ListEmptyComponent={() => (
+            <Text style={styles.emptyText}>No trips found. Start a new trip!</Text>
+          )}
         />
       </SafeAreaView>
     </SafeAreaProvider>
@@ -129,6 +165,12 @@ const ListTripComp = () => {
 };
 
 const styles = StyleSheet.create({
+  emptyText: {
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 16,
+    color: '#666',
+  },
   container: {
     flex: 1,
     paddingTop: StatusBar.currentHeight || 0,

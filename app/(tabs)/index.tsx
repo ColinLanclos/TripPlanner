@@ -14,9 +14,7 @@ export default function HomeScreen() {
     <SafeAreaView style={{flex:1}} >
       <Text>Wow</Text>
       <Link href={"/(auth)/login"}> To Auth</Link>
-  
           <ListTripComp />
-      
     </SafeAreaView>
   );
 }

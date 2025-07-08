@@ -8,6 +8,7 @@ import {auth, db } from "../firebaseConfig";
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { collection, setDoc, doc, getDoc } from 'firebase/firestore';
 import { configureReanimatedLogger } from 'react-native-reanimated';
+import { IconSelector, AvatarIcon } from './IconSelector';
 
 
 
@@ -28,6 +29,7 @@ const SignUpForm = () => {
   const [redTextForEmailAlreadyUsed, setRedTextForEmailAlreadyUsed] = useState(false);
   const [confirmEmailRedText, setConfirmEmailRedText] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectedIcon, setSelectedIcon] = useState<AvatarIcon>('account');
   
 
   async function onSubmit() {
@@ -54,13 +56,14 @@ const SignUpForm = () => {
         const user = userCredential.user;
   
         // Store user info in Firestore
-        await setDoc(doc(db, "usernames", userName.toLowerCase()),{ "id": user.uid
+        await setDoc(doc(db, "usernames", userName.toLowerCase()),{ "id": user.uid, "profilePic": selectedIcon
         }); 
         console.log("usernamed Logged")
 
         await setDoc(doc(db, "users", user.uid), {
           userName: userName.toLowerCase(),
           email: emailInput,
+          profilePic: selectedIcon
         });
         console.log("data stored ✅");
         setLoading(false);
@@ -192,6 +195,10 @@ const SignUpForm = () => {
           </View>
           {redTextNonUnqueUserName && <Text style={styles.redText}>User Name Already Taken</Text>}
           {redTextForUnvalidUserNamer && <Text style={styles.redText}>User Name has to be between 5-15 Characters and No Spaces and No Upper Case</Text>}
+
+            {/* Avatar Icon Selector */}
+            <Text style={styles.label}>Select Your Avatar Icon</Text>
+            <IconSelector selectedIcon={selectedIcon} onSelect={setSelectedIcon} />
 
           {/* Email Input */}
           <View style={styles.inputGroup}>

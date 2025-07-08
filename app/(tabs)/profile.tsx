@@ -8,11 +8,13 @@ import ChangePassword from '@/components/ChangePassword';
 import { collection, onSnapshot, doc } from 'firebase/firestore';
 import { auth, db } from '@/firebaseConfig';
 import { signOut } from '@firebase/auth';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 
 interface UserData {
   email: string;
   userName:string;
+  profilePic: string
 };
 
 
@@ -95,12 +97,11 @@ const ProfilePage = () => {
             </View>
       </Modal>
       {/* Profile Picture */}
-      <Image
-        source={{
-          uri: 'https://media.glamour.com/photos/662aa1a5135aec3fedab0103/1:1/w_1607,h_1607,c_limit/Copy%20of%20Untitled%20Design%20(7).png',
-        }}
-        style={styles.profilePic}
-      />
+      <MaterialCommunityIcons
+      name={profileData?.profilePic as any} // TypeScript might complain, but iconName matches icon strings
+      size={100}
+      color="#333"
+    />
 
       {/* Name */}
       <Text style={styles.name}>{profileData?.userName}</Text>

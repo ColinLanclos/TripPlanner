@@ -23,13 +23,29 @@ const LeaveOrDeleteTrip = () => {
 
 
     const onDeletePress = async () => {
-        //delete from trips but will have to make a function in firebase 
+        //delete from trips but will have to make a function in firebase
+        try {
+        const tripRef = doc(db, 'trip', tripdId);
+        await deleteDoc(tripRef); 
+
+        const userId = auth.currentUser?.uid;
+        if(!userId){
+            return;
+        } 
+        const docUserTrip = doc(db, "users", userId, "trips", tripdId);
+        await deleteDoc(docUserTrip);
+        console.log("deleted in user data")
+        router.push("/(tabs)")
+
+      } catch (error) {
+          console.log(error)
+      }
+
         
     }
      
     const onLeavePress = async () => {
         const docGuestRef = doc(db, "trip", tripdId, "Guest", "List")
-
         //delete in guest list
         console.log(UserName)
         console.log(tripdId)

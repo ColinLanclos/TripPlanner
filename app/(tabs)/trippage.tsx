@@ -6,9 +6,6 @@ import AttendingStatues from '@/components/AttendingStatues';
 import { router } from 'expo-router';
 import LeaveOrDeleteTrip from "@/components/LeaveOrDeleteTrip";
 
-  
-  
-
 export default function TripPage() {
   return (
       <SafeAreaView edges={["top"]}>

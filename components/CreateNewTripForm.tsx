@@ -30,6 +30,7 @@ const CreateNewTripForm = () => {
         dates: [startDate, endDate],
         description: discription,
         owner: username,
+        seen: true
       });
 
       
@@ -51,7 +52,7 @@ const CreateNewTripForm = () => {
 
       //Guest List with host
       await setDoc(doc(db,"trip", tripId, "Guest","List"),{
-        [username]: ["maybe", "https://www.google.com/imgres?imgurl=https%3A%2F%2Fmedia-cldnry.s-nbcnews.com%2Fimage%2Fupload%2Ft_fit-560w%2Cf_auto%2Cq_auto%3Abest%2Frockcms%2F2022-08%2F220805-domestic-cat-mjf-1540-382ba2.jpg&tbnid=ty1NnpaB6NiF6M&vet=10CAIQxiAoAGoXChMI8J-ryNKKjgMVAAAAAB0AAAAAEAg..i&imgrefurl=https%3A%2F%2Fwww.nbcnews.com%2Fthink%2Fopinion%2Fcats-cute-furry-cuddly-invasive-alien-species-rcna41768&docid=piOhAgIXuOy82M&w=560&h=373&q=cat&ved=0CAIQxiAoAGoXChMI8J-ryNKKjgMVAAAAAB0AAAAAEAg",[userId]]
+        [username]: ["maybe","king",userId]
       });
       console.log("Guest List is made")
 

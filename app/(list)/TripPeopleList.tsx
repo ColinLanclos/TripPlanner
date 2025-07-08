@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text, FlatList, Switch, StyleSheet, Image, Modal, ActivityIndicator, TouchableOpacity } from "react-native";
 import { deleteDoc, deleteField, doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 type Person = {
   name: string;
@@ -113,11 +114,15 @@ const TripPeopleList = () => {
         keyExtractor={(item) => item.name}
         renderItem={({ item }) => (
           <View style={styles.item}>
-            <Image source={{ uri: item.image }} style={styles.image} />
+            <MaterialCommunityIcons
+              name={item?.image as any} // TypeScript might complain, but iconName matches icon strings
+              size={20}
+              color="#333"
+            />
             <View style={styles.textContainer}>
               <Text style={styles.name}>{item.name}</Text>
               <Text style={styles.status}>{item.status}</Text>
-            </View>
+            </View> 
             <TouchableOpacity
               style={styles.kickButton}
               onPress={() => kickUser(item.name)}
@@ -190,6 +195,7 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flex: 1,
+    marginLeft: 5
   },
   name: {
     fontSize: 18,

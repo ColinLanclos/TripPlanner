@@ -11,9 +11,10 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { deleteDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
 import {db , auth} from '../firebaseConfig';
 import { async } from '@firebase/util';
+import { router } from 'expo-router';
 
 interface TripInfo {
     address: string;
@@ -54,7 +55,14 @@ const TripCard = (tripId: any) => {
               console.log(snap.data())
               console.log(data);
             } else {
-              setError("Trip not found");
+              const userId = auth.currentUser?.uid
+              if(!userId){
+                return
+              }
+              const docUserTrip = doc(db, "users", userId, "trips", tripId);
+              await deleteDoc(docUserTrip);
+              console.log("deleted in user data")
+              router.push("/(tabs)")
             }
           } catch (e: any) {
             console.error("Error fetching trip:", e);
@@ -155,6 +163,7 @@ const TripCard = (tripId: any) => {
 
     return (
       <View style={{width:'98%'}}>
+          {/* edit trip */}
            <Modal
             animationType="slide"
             transparent={true}
@@ -223,12 +232,13 @@ const TripCard = (tripId: any) => {
                 </View>
             </View>
            </Modal>
+
            <Card style={styles.card}>
               <Card.Title title={data?.title || 'Untitled Trip'} />
 
               <Card.Cover
                 resizeMode="cover"
-                source={{ uri: 'https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg' }}
+                source={{ uri: `https://maps.googleapis.com/maps/api/streetview?location=${data?.address}&size=600x400&key=AIzaSyAdpb_QNAlmoL30L8bFm91HBidOmXm1OIw` }}
                 style={styles.image}
               />
 

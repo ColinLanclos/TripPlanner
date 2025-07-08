@@ -52,6 +52,7 @@ const AddPersonButton = () => {
   
   async function addNewitem() {
     let userId = "";
+    let profilePic = "";
     if(!itemName){
       setDisplay(true);
     }else{
@@ -62,8 +63,11 @@ const AddPersonButton = () => {
     
           // To get a field named "id" inside the document (if it exists)
           const idField = docSnap.data().id;
+          
+          
           console.log("Field 'id':", idField);
           userId = idField;
+          profilePic = docSnap.data().profilePic;
         } else {
           console.log("No such document!");
           return null;
@@ -77,7 +81,7 @@ const AddPersonButton = () => {
         }
        const docRef = doc(db,"trip", value, "Guest", "List");
        console.log(itemName)
-       await setDoc(docRef,{[itemName]:["maybe", "https://www.google.com/imgres?imgurl=https%3A%2F%2Fmedia-cldnry.s-nbcnews.com%2Fimage%2Fupload%2Ft_fit-560w%2Cf_auto%2Cq_auto%3Abest%2Frockcms%2F2022-08%2F220805-domestic-cat-mjf-1540-382ba2.jpg&tbnid=ty1NnpaB6NiF6M&vet=10CAIQxiAoAGoXChMI8J-ryNKKjgMVAAAAAB0AAAAAEAg..i&imgrefurl=https%3A%2F%2Fwww.nbcnews.com%2Fthink%2Fopinion%2Fcats-cute-furry-cuddly-invasive-alien-species-rcna41768&docid=piOhAgIXuOy82M&w=560&h=373&q=cat&ved=0CAIQxiAoAGoXChMI8J-ryNKKjgMVAAAAAB0AAAAAEAg", userId]},{merge:true})
+       await setDoc(docRef,{[itemName]:["maybe", profilePic, userId]},{merge:true})
         
         //add trip to user trip list 
         const tripDocRef = doc(db,"trip", value)
@@ -87,7 +91,7 @@ const AddPersonButton = () => {
       
 
         const userDocRef = doc(db, "users", userId, "trips", value)
-        await setDoc(userDocRef, {...tripData});
+        await setDoc(userDocRef, {...tripData, seen:false});
 
 
 
