@@ -11,7 +11,6 @@ export default function TripPage() {
       <SafeAreaView edges={["top"]}>
         <ScrollView className="container bg-white w-full h-full text-left"  contentContainerStyle={{ paddingBottom: 100 }}>
           <View className="mt-5">
-            <Text>Ntn</Text>
             <TripPlanComp /> 
             <View style={styles.centeredWrapper}>
               <TouchableOpacity

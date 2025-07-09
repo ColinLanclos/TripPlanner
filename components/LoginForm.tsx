@@ -24,8 +24,9 @@ const LoginForm = () => {
         signInWithEmailAndPassword(auth, emailInput, passwordInput)
         .then(() => {
           console.log('Signed in!');
-          setLoading(false)
+          setLoading(false);
           setWrongPWEmail(false);
+          router.push("/(tabs)")
         })
         .catch(error => {
           setLoading(false);

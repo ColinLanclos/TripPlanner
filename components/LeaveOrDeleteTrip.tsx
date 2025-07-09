@@ -1,18 +1,15 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {
-  FlatList,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import TripCard from './TripTitleCard';
 import { auth, db } from '@/firebaseConfig';
-import { deleteDoc, deleteField, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { collection, deleteDoc, deleteField, doc, getDoc, getDocs, updateDoc } from 'firebase/firestore';
 
 
 
@@ -27,6 +24,15 @@ const LeaveOrDeleteTrip = () => {
         try {
         const tripRef = doc(db, 'trip', tripdId);
         await deleteDoc(tripRef); 
+        const subcollections = ['Grocery', 'Group', 'Guest', 'Itinerary', 'PersonalList'];
+        for (const sub of subcollections) {
+          const subColRef = collection(db, 'trip', tripdId, sub);
+          const snapshot = await getDocs(subColRef);
+    
+          for (const subDoc of snapshot.docs) {
+            await deleteDoc(subDoc.ref);
+          }
+        }
 
         const userId = auth.currentUser?.uid;
         if(!userId){
@@ -39,9 +45,7 @@ const LeaveOrDeleteTrip = () => {
 
       } catch (error) {
           console.log(error)
-      }
-
-        
+      } 
     }
      
     const onLeavePress = async () => {

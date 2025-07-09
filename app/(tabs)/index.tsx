@@ -12,8 +12,6 @@ import CheckForLoginComp from '@/components/checkForLoginComp';
 export default function HomeScreen() {
   return (
     <SafeAreaView style={{flex:1}} >
-      <Text>Wow</Text>
-      <Link href={"/(auth)/login"}> To Auth</Link>
           <ListTripComp />
     </SafeAreaView>
   );

@@ -16,11 +16,8 @@ const login = () => {
     <SafeAreaView>
       <ScrollView className="container bg-white w-full h-full text-left">
         <View className="items-center">
-           <Link href={"/(tabs)/createtrip"}>back to other</Link>
-           <Text>Build in login component</Text>
            <LoginForm />
         </View>
-        
       </ScrollView>
       </SafeAreaView>
   );

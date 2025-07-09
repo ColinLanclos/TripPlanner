@@ -151,11 +151,6 @@ const ItemListScreen = () => {
           contentContainerStyle={styles.flatListContent}
         />
 
-        {/* Button or any other content */}
-        <TouchableOpacity onPress={() => console.log('Going to the next screen')}>
-          <Text style={styles.button}>Go to Next Screen</Text>
-        </TouchableOpacity>
-        
       </View>
     </SafeAreaView>
   );
