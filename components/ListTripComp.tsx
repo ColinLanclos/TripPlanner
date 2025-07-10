@@ -17,7 +17,7 @@ import { collection, doc, onSnapshot, updateDoc } from 'firebase/firestore';
 type ItemData = {
   id: string;
   title: string;
-  location: string; // Add location for fetching background image
+  address: string; // Add location for fetching background image
   dates: ["" , ""]
   seen: boolean
 };
@@ -36,8 +36,7 @@ type ItemProps = {
 
 const Item = ({ item, onPress, backgroundColor, textColor }: ItemProps) => {
   // Google Static Maps API URL for background image
- // const googleMapsAPI = `https://maps.googleapis.com/maps/api/staticmap?center=${item.location}&zoom=12&size=500x300&maptype=roadmap&key=AIzaSyAdpb_QNAlmoL30L8bFm91HBidOmXm1OIw`;
-  const googleMapsAPI = `https://maps.googleapis.com/maps/api/streetview?location=${item.location}&size=600x400&key=AIzaSyAdpb_QNAlmoL30L8bFm91HBidOmXm1OIw`
+  let googleMapsAPI = `https://maps.googleapis.com/maps/api/streetview?location=${item.address}&size=600x400&key=AIzaSyAdpb_QNAlmoL30L8bFm91HBidOmXm1OIw`
 
   return (
     <TouchableOpacity

@@ -33,6 +33,7 @@ const AddDefaultItemModal: React.FC<MyModalProps> = ({visible , onClose, thisTri
                 const docRef = doc(db, "users", userId, "Default_List", tripNameParam);
                 try{
                 await updateDoc(docRef,{ items:arrayUnion(itemName)})
+                setItemName("");
                 onClose();
                 }catch(error){
                     console.log(error);

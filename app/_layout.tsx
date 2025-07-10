@@ -31,7 +31,7 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" options={{headerShown: false}} />
         <Stack.Screen name="(auth)" options={{headerShown: false}}/>
         <Stack.Screen name="(edit)" options={{headerShown: false}}/>
         <Stack.Screen name="+not-found" />

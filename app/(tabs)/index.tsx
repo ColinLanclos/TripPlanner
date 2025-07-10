@@ -1,18 +1,16 @@
 import { Image,Text, StyleSheet, Platform, View } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ListTripComp from '@/components/ListTripComp';
-import { Link } from 'expo-router';
-import CheckForLoginComp from '@/components/checkForLoginComp';
+import NotificationPermissionModal from '@/components/NotificationPermision';
+import { auth } from '@/firebaseConfig';
 
 export default function HomeScreen() {
   return (
     <SafeAreaView style={{flex:1}} >
           <ListTripComp />
+          {auth.currentUser?.uid ? (
+              <NotificationPermissionModal userId={auth.currentUser.uid} />
+            ) : null}
     </SafeAreaView>
   );
 }
