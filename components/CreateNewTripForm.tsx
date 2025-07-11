@@ -52,7 +52,7 @@ const CreateNewTripForm = () => {
 
       //Guest List with host
       await setDoc(doc(db,"trip", tripId, "Guest","List"),{
-        [username]: ["maybe","king",userId]
+        [username]: ["maybe","crown",userId]
       });
       console.log("Guest List is made")
 
