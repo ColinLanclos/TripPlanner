@@ -235,9 +235,13 @@ const TripCard = (tripId: any) => {
 
            <Card style={styles.card}>
            <Card.Title
-                title={data?.title || 'Untitled Trip'}
-                titleStyle={{ fontSize: 20, fontWeight: '600', color: '#2a2a2a' }}
-              />
+              title={data?.title || 'Untitled Trip'}
+              titleStyle={{ 
+                fontSize: 20, 
+                fontWeight: '600', 
+                color: '#374151'  // Slate gray: softer and friendlier than black/dark gray
+              }}
+            />
 
               <Card.Cover
                 resizeMode="cover"
@@ -286,28 +290,28 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'flex-end', // or 'center' / 'flex-start'
   },
-   editButton: {
-    backgroundColor: '#e0e0e0', // tonal look
+  editButton: {
+    backgroundColor: '#F9FAFB', // soft white background for tonal look
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 8,
     alignSelf: 'flex-start',
     marginTop: 8,
-    elevation:10
+    elevation: 10,
   },
   editButtonText: {
-    color: '#000',
+    color: '#1E3A8A', // navy blue text
     fontWeight: '600',
     fontSize: 16,
   },
   buttonOpen: {
-    backgroundColor: '#F194FF',
+    backgroundColor: '#FACC15', // cheerful yellow
   },
   buttonClose: {
-    backgroundColor: '#2196F3',
+    backgroundColor: '#1E3A8A', // navy blue
   },
   button: {
-    backgroundColor: '#4f46e5',
+    backgroundColor: '#1E3A8A', // navy blue base button
     paddingVertical: 14,
     paddingHorizontal: 20,
     borderRadius: 10,
@@ -315,7 +319,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: 'white',
+    backgroundColor: '#F9FAFB', // soft white background
     borderRadius: 20,
     padding: 35,
     shadowColor: '#000',
@@ -326,18 +330,23 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-  },centeredView: {
+  },
+  centeredView: {
     flex: 1,
     justifyContent: 'center',
-  },modalText: {
+  },
+  modalText: {
     marginBottom: 15,
     textAlign: 'center',
-  },textStyle: {
-    color: 'white',
+    color: '#1E3A8A', // navy blue text
+  },
+  textStyle: {
+    color: '#F9FAFB', // soft white text
     fontWeight: 'bold',
     textAlign: 'center',
-  },redText:{
-    color: '#FF0000',
+  },
+  redText: {
+    color: '#EF4444', // sharp alert red
     fontSize: 25,
     textAlign: 'center',
   },
@@ -345,12 +354,17 @@ const styles = StyleSheet.create({
     height: 40,
     margin: 12,
     borderWidth: 1,
+    borderColor: '#9CA3AF',   // muted cool gray border
+    backgroundColor: '#F9FAFB', // soft white background
     padding: 10,
+    color: '#374151',         // slate text color
+    borderRadius: 8,          // add a bit of rounding for softness
   },
   card: {
     margin: 12,
-    zIndex: 10, 
-    elevation: 3 ,
+    backgroundColor: '#F9FAFB', // soft white card background
+    zIndex: 10,
+    elevation: 3,
     borderRadius: 12,
   },
   image: {
@@ -358,9 +372,10 @@ const styles = StyleSheet.create({
   },
   text: {
     marginTop: 4,
+    color: '#374151', //  text
   },
   buttonToChooseDates: {
-    color: '#fff',
+    color: '#F9FAFB', // white text on colored button
     fontSize: 16,
     fontWeight: '600',
   },

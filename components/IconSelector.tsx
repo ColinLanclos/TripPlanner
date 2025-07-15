@@ -18,26 +18,28 @@ type IconSelectorProps = {
 
 export const IconSelector: React.FC<IconSelectorProps> = ({ selectedIcon, onSelect }) => {
   return (
-    <FlatList
-      horizontal
-      data={avatarIcons}
-      keyExtractor={(item) => item}
-      showsHorizontalScrollIndicator={false}
-      renderItem={({ item }) => (
-        <TouchableOpacity
-          onPress={() => onSelect(item)}
-          style={{
-            padding: 10,
-            borderRadius: 10,
-            backgroundColor: selectedIcon === item ? '#ddd' : 'transparent',
-            marginRight: 8,
-          }}
-        >
-          <MaterialCommunityIcons name={item} size={36} color="#333" />
-        </TouchableOpacity>
-      )}
-      contentContainerStyle={{ paddingVertical: 10 }}
-    />
+    <View style={{ marginVertical: 10 }}>
+  <FlatList
+    horizontal
+    data={avatarIcons}
+    keyExtractor={(item) => item}
+    showsHorizontalScrollIndicator={false}
+    renderItem={({ item }) => (
+      <TouchableOpacity
+        onPress={() => onSelect(item)}
+        style={{
+          padding: 10,
+          borderRadius: 10,
+          backgroundColor: selectedIcon === item ? '#ddd' : 'transparent',
+          marginRight: 8,
+        }}
+      >
+        <MaterialCommunityIcons name={item} size={36} color="#333" />
+      </TouchableOpacity>
+    )}
+    contentContainerStyle={{ paddingVertical: 10 }}
+  />
+</View>
   );
 };
 

@@ -61,18 +61,18 @@ export default function TripPage() {
 }
 const styles = StyleSheet.create({
   leaveButton: {
-    backgroundColor: '#ffaa00',
+    backgroundColor: '#FACC15', // Soft Yellow
     padding: 12,
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 12,
   },
   leaveButtonText: {
-    color: '#fff',
+    color: '#1E3A8A', // Navy for contrast on yellow
     fontWeight: 'bold',
   },
   deleteButton: {
-    backgroundColor: '#FF3B30', // red
+    backgroundColor: '#EF4444', // Coral Red
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 8,
@@ -88,33 +88,34 @@ const styles = StyleSheet.create({
     paddingTop: 5,
     paddingHorizontal: 20,
     flexDirection: 'row',
-    flexWrap: 'wrap', // Allow items to wrap
-    justifyContent: 'space-between', // Evenly space out buttons
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
   },
   button: {
-    backgroundColor: '#6e3b6e', // Purple background
-    paddingVertical: 12,         // Padding on top and bottom
-    paddingHorizontal: 20,       // Padding on the sides
-    marginBottom: 15,            // Spacing between buttons
-    borderRadius: 8,             // Rounded corners
-    alignItems: 'center',        // Center the text horizontally
-    justifyContent: 'center',    // Center the text vertically
-    width: '48%',                // Each button takes up roughly half the width
-    elevation: 3,                // Add shadow for Android
-    shadowColor: '#000',         // iOS shadow color
-    shadowOffset: { width: 0, height: 2 }, // Shadow offset
-    shadowOpacity: 0.2,          // Shadow opacity
-    shadowRadius: 4,             // Shadow blur radius
+    backgroundColor: '#1E3A8A', // Navy
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    marginBottom: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '48%',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
   buttonText: {
-    color: '#fff',               // White text color
-    fontSize: 18,                 // Font size
-    fontWeight: 'bold',           // Bold text
+    color: '#F9FAFB',           // Light background for contrast
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   centeredWrapper: {
     alignItems: 'center',
-    marginTop: 20, // optional spacing
+    marginTop: 20,
   },
 });
+
 
 

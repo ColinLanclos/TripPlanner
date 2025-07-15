@@ -8,9 +8,9 @@ const _layout = () => {
     return (
         //make tabs into stack after testing 
             <Tabs>
-                <Tabs.Screen name="login" options={{headerShown: true}} />
-                <Tabs.Screen name="signup" options={{headerShown: true}} />
-                <Tabs.Screen name="resetpassword" options={{headerShown: true}}/>
+                <Tabs.Screen name="login" options={{headerShown: false,tabBarButton: () => null,tabBarStyle: { display: 'none' }}} />
+                <Tabs.Screen name="signup" options={{headerShown: false,tabBarButton: () => null,tabBarStyle: { display: 'none' }}} />
+                <Tabs.Screen name="resetpassword" options={{headerShown: false,tabBarButton: () => null,tabBarStyle: { display: 'none' }}}/>
             </Tabs>
     )
 }

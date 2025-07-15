@@ -13,13 +13,7 @@ import CreateNewTripForm from '@/components/CreateNewTripForm';
 
 export default function TabTwoScreen() {
   return (
-      <SafeAreaView edges={["top"]}>
-        <ScrollView className="container bg-white w-full h-full text-left">
-          <View className="mt-5">
-            <CreateNewTripForm />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
+          <CreateNewTripForm />
     );
 }
 

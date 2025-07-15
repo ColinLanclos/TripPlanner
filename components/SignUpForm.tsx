@@ -177,10 +177,12 @@ const SignUpForm = () => {
   
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={styles.safeArea}>
-        <ScrollView contentContainerStyle={styles.container}>
+    <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: 'white' }}>
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={[styles.container, { flexGrow: 1 }]}
+      >
           <Text style={styles.header}>Sign Up</Text>
-
           {/* Username Input */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>User Name</Text>
@@ -331,13 +333,14 @@ redText: {
   container: {
     padding: 20,
     paddingBottom: 40,
-    justifyContent: 'center',
-    flex: 1,
+    justifyContent: 'flex-start', // better for forms
+    flexGrow: 1, // allows ScrollView content to stretch and scroll
   },
   header: {
     fontSize: 32,
     fontWeight: 'bold',
     textAlign: 'center',
+    marginTop: 10,
     marginBottom: 30,
     color: '#333',
   },

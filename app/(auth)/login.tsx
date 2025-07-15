@@ -13,13 +13,7 @@ const style = StyleSheet.create({
 
 const login = () => {
   return (
-    <SafeAreaView>
-      <ScrollView className="container bg-white w-full h-full text-left">
-        <View className="items-center">
            <LoginForm />
-        </View>
-      </ScrollView>
-      </SafeAreaView>
   );
 };
 

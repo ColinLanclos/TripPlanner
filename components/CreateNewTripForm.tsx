@@ -60,10 +60,6 @@ const CreateNewTripForm = () => {
       await createPlainItenerary(tripId);
       console.log("Itenererary Made")
 
-      
-      
-
-      
       console.log("Trip document successfully written.");
       router.push("/(tabs)")
     } catch (error) {
@@ -83,7 +79,13 @@ const CreateNewTripForm = () => {
       date <= end;
       date.setDate(date.getDate() + 1)
     ) {
-      itineraryDates.push(date.toISOString().split("T")[0]); // "YYYY-MM-DD"
+      itineraryDates.push(
+        date.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        })
+      ); // "YYYY-MM-DD"
     }
 
     try {
@@ -196,7 +198,6 @@ const CreateNewTripForm = () => {
   }
 
   return (
-    <SafeAreaProvider>
       <SafeAreaView style={styles.safeArea}>
         {/* start date picker */}
         <DateTimePickerModal
@@ -289,34 +290,35 @@ const CreateNewTripForm = () => {
           >
             <Text style={styles.submitButtonText}>Submit</Text>
           </TouchableOpacity>
-
         </ScrollView>
       </SafeAreaView>
-    </SafeAreaProvider>
   );
 };
 
 const styles = StyleSheet.create({
   redText: {
-    color: 'red',
+    color: '#EF4444', // alert red
     fontWeight: 'bold',
     marginBottom: 10,
   },
   inputDescription: {
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
+    borderColor: '#9CA3AF', // light gray
+    backgroundColor: '#F9FAFB',
+    borderRadius: 8,
     padding: 10,
     minHeight: 100,
     textAlignVertical: 'top',
-    fontSize: 16
+    fontSize: 16,
+    color: '#374151', // slate text
   },
   safeArea: {
-    flex: 1, // Ensures full screen usage
+    flexGrow: 1,
+    backgroundColor: '#F9FAFB', // soft white background
   },
   formContainer: {
     padding: 20,
-    paddingBottom: 40, // Extra padding at the bottom
+    paddingBottom: 40,
     justifyContent: 'center',
   },
   header: {
@@ -324,26 +326,28 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 30,
-    color: '#333',
+    color: '#1E3A8A', // navy heading
   },
   inputGroup: {
     marginBottom: 20,
   },
   label: {
     fontSize: 16,
-    color: '#333',
+    color: '#374151', // softer text
     marginBottom: 8,
   },
   input: {
     height: 40,
-    borderColor: '#ccc',
+    borderColor: '#9CA3AF',
+    backgroundColor: '#F9FAFB',
     borderWidth: 1,
     borderRadius: 8,
     paddingLeft: 10,
     fontSize: 16,
+    color: '#374151',
   },
   submitButton: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#1E3A8A', // primary navy button
     paddingVertical: 12,
     borderRadius: 8,
     marginTop: 20,
@@ -351,7 +355,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   submitButtonText: {
-    color: '#fff',
+    color: '#F9FAFB', // soft white on navy
     fontSize: 18,
     fontWeight: 'bold',
   },
@@ -360,24 +364,25 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   button: {
-    backgroundColor: '#4A90E2', // Modern blue
+    backgroundColor: '#FACC15', // cheerful yellow for secondary actions
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 8,
     alignItems: 'center',
     flex: 1,
     marginHorizontal: 5,
-    elevation: 3, // For Android shadow
+    elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
   },
   buttonToChooseDates: {
-    color: '#fff',
+    color: '#1E3A8A', // navy text on yellow button
     fontSize: 16,
     fontWeight: '600',
   },
 });
+
 
 export default CreateNewTripForm;

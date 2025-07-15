@@ -16,10 +16,6 @@ const ItemListScreen = () => {
   const [groupList, setGroupList] = useState<Group[]>([]);
   const [tripId, setTripId] = useState("");
 
-  // Handle toggle for the switch
-  const handleSwitchToggle = (itemId: string) => {
-  };
-
   const handlePlusItem =  async(id: string) => {
     try{
       const userId = auth.currentUser?.uid;
@@ -195,8 +191,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     flex: 2,  // Makes the item name take up more space
   },
-  itemPerson: {
-    
+  itemPerson: { 
     fontSize: 16,
     color: 'gray',
     flex: 3,  // Ensures enough space for the person

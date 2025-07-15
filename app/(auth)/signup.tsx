@@ -14,13 +14,7 @@ const style = StyleSheet.create({
 
 const singup = () => {
   return (
-
-      <ScrollView className="container bg-white w-full h-full text-left">
-        <View className="items-center">
            <SignUpForm/>
-        </View>
-      </ScrollView>
-
   );
 };
 

@@ -128,7 +128,7 @@ const AddPersonButton = () => {
                 value={itemName}
               />
               
-                <FlatList
+              <FlatList
               data={userNames}
               keyExtractor={(item) => item}
               keyboardShouldPersistTaps="handled"
@@ -137,7 +137,7 @@ const AddPersonButton = () => {
                   style={styles.resultItem}
                   onPress={() => setItemName(item)}
                 >
-                  <Text>{item}</Text>
+                  <Text style={styles.resultText}>{item}</Text>
                 </TouchableOpacity>
               )}
               ListEmptyComponent={
@@ -179,10 +179,16 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
   },
   resultItem: {
-    padding: 8,
-    fontSize: 16,
+    paddingVertical: 16,             // More height for touch target
+    paddingHorizontal: 12,           // Add side padding for spacing
+    backgroundColor: '#F9FAFB',      // Optional: soft background for clarity
     borderBottomWidth: 1,
-    borderBottomColor: "#eee",
+    borderBottomColor: '#eee',
+    justifyContent: 'center',        // Ensures content is centered vertically
+  },resultText: {
+    fontSize: 18,              // Bigger text
+    color: '#1E3A8A',          // Navy blue to match your theme
+    fontWeight: '500',
   },
   button: {
     backgroundColor: '#007bff',

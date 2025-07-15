@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
@@ -35,6 +36,11 @@ const resetpassword = () => {
       <TouchableOpacity style={styles.button} onPress={handlePasswordReset}>
         <Text style={styles.buttonText}>Send Reset Link</Text>
       </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={() => {
+        router.push("/(auth)/login")
+      }}>
+        <Text style={styles.buttonText}>To Login</Text>
+      </TouchableOpacity>
     </View>
   );
   
@@ -67,6 +73,7 @@ const styles = StyleSheet.create({
     padding: 14,
     borderRadius: 8,
     alignItems: 'center',
+    marginBottom: 8
   },
   buttonText: {
     color: '#fff',
