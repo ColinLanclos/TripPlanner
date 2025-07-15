@@ -27,5 +27,5 @@ export async function registerForPushNotificationsAsync(userId: string) {
     const token = tokenData.data;
     console.log('✅ Expo Push Token:', token);
 
-    await setDoc(doc(db, 'users', userId), { expoPushToken: token }, { merge: true });
+    await setDoc(doc(db, 'users', userId), { pushToken: token }, { merge: true });
 }
