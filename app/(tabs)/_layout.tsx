@@ -8,6 +8,7 @@ import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import CheckForLoginComp from '@/components/checkForLoginComp';
+import { Ionicons } from '@expo/vector-icons';
 
 
 export default function TabLayout() {
@@ -46,7 +47,7 @@ export default function TabLayout() {
         <Tabs.Screen name="profile"
           options={{
             title: 'Profile',
-            tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.fill" color={color} />,
+            tabBarIcon: ({ color }) => <Ionicons name="person" size={28} color={color} />,
           }}/>
 
           <Tabs.Screen name='trippage'

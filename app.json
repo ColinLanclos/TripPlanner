@@ -16,7 +16,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.anonymous.TripPlanner"
     },
     "web": {
       "bundler": "metro",
@@ -37,7 +38,6 @@
       [
         "expo-notifications",
         {
-          "icon": "./assets/images/notification-icon.png",
           "color": "#ffffff"
         }
       ]
